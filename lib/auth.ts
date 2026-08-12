@@ -1,0 +1,1 @@
+import{createClient}from'@/lib/supabase/server';export async function getAdmin(){const db=await createClient();const{data:{user}}=await db.auth.getUser();if(!user)return null;const{data:p}=await db.from('profiles').select('full_name,role').eq('id',user.id).single();return p?.role==='admin'?{user,profile:p}:null}
