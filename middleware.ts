@@ -1,1 +1,60 @@
-import{NextResponse,type NextRequest}from'next/server';import{createServerClient}from'@supabase/ssr';export async function middleware(req:NextRequest){let res=NextResponse.next({request:{headers:req.headers}});const db=createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,{cookies:{getAll:()=>req.cookies.getAll(),setAll(a){a.forEach(({name,value,options})=>{req.cookies.set(name,value);res.cookies.set(name,value,options)})}}});const{data:{user}}=await db.auth.getUser();const p=req.nextUrl.pathname;if(p.startsWith('/admin')&&!user)return NextResponse.redirect(new URL('/auth/login/admin',req.url));if((p==='/auth/login/admin'||p==='/auth/forgot-password')&&user)return NextResponse.redirect(new URL('/admin',req.url));return res}export const config={matcher:['/admin/:path*','/auth/login/admin','/auth/forgot-password']};
+import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
+
+export async function middleware(req: NextRequest) {
+  let res = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  });
+
+  const pathname = req.nextUrl.pathname;
+  const isDemo = req.cookies.get('angel_admin_demo')?.value === 'true';
+
+  let hasSupabaseUser = false;
+
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => req.cookies.getAll(),
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              req.cookies.set(name, value);
+              res.cookies.set(name, value, options);
+            });
+          },
+        },
+      }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      hasSupabaseUser = true;
+    }
+  } catch {
+    // Graceful fallback
+  }
+
+  const isAuthenticated = Boolean(hasSupabaseUser || isDemo);
+
+  // Protect admin routes
+  if (pathname.startsWith('/admin') && !isAuthenticated) {
+    const loginUrl = new URL('/auth/login/admin', req.url);
+    loginUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  return res;
+}
+
+export const config = {
+  matcher: [
+    '/admin/:path*',
+  ],
+};

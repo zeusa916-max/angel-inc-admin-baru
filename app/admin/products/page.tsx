@@ -1,1 +1,46 @@
-import Link from'next/link';import{createClient}from'@/lib/supabase/server';import{idr,date}from'@/lib/utils';import DeleteProduct from'@/components/delete-product';export default async function Products(){const db=await createClient();const{data}=await db.from('products').select('*,categories(name)').order('created_at',{ascending:false});return <div><div className="flex items-end justify-between"><div><p className="text-xs tracking-[.25em] text-neutral-400">CATALOG</p><h1 className="mt-2 font-display text-4xl">Produk</h1></div><Link href="/admin/products/new" className="rounded-xl bg-black px-4 py-3 text-sm text-white">+ Tambah</Link></div><div className="mt-7 overflow-x-auto rounded-2xl border bg-white"><table className="w-full min-w-[850px] text-left text-sm"><thead className="border-b text-xs text-neutral-400"><tr><th className="p-4">Nama</th><th>SKU</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead><tbody>{(data||[]).map(p=><tr key={p.id} className="border-b"><td className="p-4">{p.name}</td><td>{p.sku}</td><td>{p.categories?.name||'—'}</td><td>{idr(p.discount_price??p.price)}</td><td>{p.stock}</td><td>{p.status}</td><td><Link href={`/admin/products/${p.id}/edit`} className="rounded-lg border px-3 py-2 text-xs">Edit</Link><span className="ml-2"><DeleteProduct id={p.id}/></span></td></tr>)}</tbody></table>{!data?.length&&<p className="p-8 text-center text-sm text-neutral-500">Belum ada produk.</p>}</div></div>}
+import Link from 'next/link';
+import { ProductService } from '@/server/services/product.service';
+import { CategoryService } from '@/server/services/category.service';
+import { Plus } from 'lucide-react';
+import ProductsClientView from './products-client';
+import ClearDummyModal from '@/components/admin/clear-dummy-modal';
+import RecreateDummyModal from '@/components/admin/recreate-dummy-modal';
+
+export default async function ProductsPage() {
+  const [products, categories] = await Promise.all([
+    ProductService.getAll(),
+    CategoryService.getAll({ activeOnly: true }),
+  ]);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold tracking-[0.2em] text-neutral-400 dark:text-neutral-500 uppercase">
+            Manajemen Katalog
+          </p>
+          <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">
+            Daftar Produk
+          </h1>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+            Total {products.length} produk terdaftar dalam katalog
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <RecreateDummyModal />
+          <ClearDummyModal />
+          <Link
+            href="/admin/products/new"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-neutral-950 dark:bg-white px-4 py-2.5 text-xs font-semibold text-white dark:text-neutral-950 shadow-sm transition hover:bg-neutral-800 dark:hover:bg-neutral-200"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Tambah Produk</span>
+          </Link>
+        </div>
+      </div>
+
+      <ProductsClientView initialProducts={products} categories={categories} />
+    </div>
+  );
+}

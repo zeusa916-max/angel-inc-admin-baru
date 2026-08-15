@@ -1,1 +1,24 @@
-import Link from'next/link';import{createClient}from'@/lib/supabase/server';export default async function Customers(){const{data}=await(await createClient()).from('customers').select('*').order('created_at',{ascending:false});return <div><h1 className="font-display text-4xl">Pelanggan</h1><div className="mt-7 overflow-x-auto rounded-2xl border bg-white"><table className="w-full min-w-[650px] text-left text-sm"><thead className="border-b text-xs text-neutral-400"><tr><th className="p-4">Nama</th><th>Email</th><th>Telepon</th><th>Bergabung</th><th></th></tr></thead><tbody>{(data||[]).map(c=><tr key={c.id} className="border-b"><td className="p-4">{c.name}</td><td>{c.email}</td><td>{c.phone||'—'}</td><td>{new Date(c.created_at).toLocaleDateString('id-ID')}</td><td><Link href={`/admin/customers/${c.id}`} className="rounded-lg border px-3 py-2 text-xs">Detail</Link></td></tr>)}</tbody></table></div></div>}
+import { CustomerService } from '@/server/services/customer.service';
+import CustomersClientView from './customers-client';
+
+export default async function CustomersPage() {
+  const customers = await CustomerService.getAll();
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <p className="text-xs font-semibold tracking-[0.2em] text-neutral-400 uppercase">
+          Basis Data Pengguna
+        </p>
+        <h1 className="mt-1 font-display text-3xl font-bold tracking-tight text-neutral-900">
+          Daftar Pelanggan
+        </h1>
+        <p className="text-xs text-neutral-500 mt-1">
+          Daftar pelanggan terdaftar dan riwayat aktivitas transaksi
+        </p>
+      </div>
+
+      <CustomersClientView initialCustomers={customers} />
+    </div>
+  );
+}
