@@ -1,7 +1,22 @@
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { getAdmin } from '@/lib/auth';
 import Nav from '@/components/layout/nav';
 import MobileNav from '@/components/layout/mobile-nav';
+
+export const metadata: Metadata = {
+  title: 'ANGEL INC. — Admin Portal',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
+};
 
 export default async function AdminLayout({
   children,

@@ -144,8 +144,9 @@ export default function StorefrontFooter() {
               </li>
               <li className="pt-2">
                 <Link
-                  href="/auth/login/admin"
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-[11px] font-bold text-amber-400 hover:bg-neutral-800 transition"
+                  href="/admin"
+                  rel="nofollow"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/80 px-3 py-1.5 text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition"
                 >
                   <Shield className="h-3 w-3" />
                   <span>Portal Admin</span>

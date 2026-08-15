@@ -26,11 +26,32 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'ANGEL INC. — Admin Portal',
-  description: 'Sistem Manajemen & Portal Administrator Resmi ANGEL INC. (Made in Paradise)',
+  metadataBase: new URL('https://angel-inc.vercel.app'),
+  title: {
+    default: 'ANGEL INC. — Premium Fragrance, Beauty & Fashion',
+    template: '%s | ANGEL INC.',
+  },
+  description: 'Fragrance, beauty, and fashion designed to become part of your everyday story. Made in Paradise.',
+  keywords: ['Angel Inc', 'Fragrance', 'Parfume', 'Body Mist', 'Body Care', 'Fashion', 'Jakarta', 'Indonesia'],
+  authors: [{ name: 'ANGEL INC.' }],
+  creator: 'ANGEL INC.',
+  publisher: 'ANGEL INC.',
   icons: {
     icon: '/angel-inc-logo.jpg',
     apple: '/angel-inc-logo.jpg',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'id_ID',
+    url: 'https://angel-inc.vercel.app',
+    siteName: 'ANGEL INC.',
+    title: 'ANGEL INC. — Premium Fragrance & Fashion',
+    description: 'Fragrance, beauty, and fashion designed to become part of your everyday story. Made in Paradise.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ANGEL INC. — Premium Fragrance & Fashion',
+    description: 'Fragrance, beauty, and fashion designed to become part of your everyday story.',
   },
 };
 

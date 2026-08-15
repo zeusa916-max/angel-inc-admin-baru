@@ -124,16 +124,6 @@ export default function StorefrontHeader() {
               <span className="text-[11px] font-bold">{cartCount}</span>
             </button>
 
-            {/* Portal Admin Quick Link */}
-            <Link
-              href="/admin"
-              className="hidden lg:inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition shadow-subtle"
-              title="Akses Dashboard Admin"
-            >
-              <Shield className="h-3.5 w-3.5 text-neutral-500" />
-              <span>Portal Admin</span>
-            </Link>
-
             {/* Mobile Menu Button */}
             <button
               type="button"
@@ -181,7 +171,7 @@ export default function StorefrontHeader() {
               </nav>
             </div>
 
-            <div className="border-t border-neutral-100 dark:border-neutral-800 pt-6 space-y-3">
+            <div className="border-t border-neutral-100 dark:border-neutral-800 pt-6">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">
                   Mata Uang ({currency})
@@ -193,15 +183,6 @@ export default function StorefrontHeader() {
                   Ganti ke {currency === 'IDR' ? 'USD' : 'IDR'}
                 </button>
               </div>
-
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3 text-xs font-bold shadow-sm"
-              >
-                <Shield className="h-4 w-4" />
-                <span>Masuk ke Portal Admin</span>
-              </Link>
             </div>
           </div>
         </div>

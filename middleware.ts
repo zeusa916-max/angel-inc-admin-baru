@@ -43,6 +43,11 @@ export async function middleware(req: NextRequest) {
 
   const isAuthenticated = Boolean(hasSupabaseUser || isDemo);
 
+  // Set X-Robots-Tag to permanently hide /admin and /auth from search engine indexers
+  if (pathname.startsWith('/admin') || pathname.startsWith('/auth')) {
+    res.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+  }
+
   // Protect admin routes
   if (pathname.startsWith('/admin') && !isAuthenticated) {
     const loginUrl = new URL('/auth/login/admin', req.url);
@@ -56,5 +61,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*',
+    '/auth/:path*',
   ],
 };
