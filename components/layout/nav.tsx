@@ -19,6 +19,7 @@ import {
   Settings,
   LogOut,
   ShieldCheck,
+  Globe,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -111,6 +112,17 @@ export default function Nav({
             );
           })}
         </nav>
+
+        <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800">
+          <Link
+            href="/"
+            target="_blank"
+            className="flex items-center gap-2.5 rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/70 dark:bg-neutral-900/60 px-3.5 py-2.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-950 dark:hover:text-white transition"
+          >
+            <Globe className="h-4 w-4 text-neutral-500" />
+            <span>Lihat Website Toko</span>
+          </Link>
+        </div>
       </div>
 
       <div className="border-t border-neutral-100 dark:border-neutral-800 pt-4">

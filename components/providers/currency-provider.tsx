@@ -144,11 +144,14 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
  */
 export function Price({
   value,
+  amount,
   className = '',
 }: {
-  value: number | string | null | undefined;
+  value?: number | string | null | undefined;
+  amount?: number | string | null | undefined;
   className?: string;
 }) {
   const { formatPrice } = useCurrency();
-  return <span className={className}>{formatPrice(value)}</span>;
+  const targetVal = value !== undefined ? value : amount;
+  return <span className={className}>{formatPrice(targetVal)}</span>;
 }

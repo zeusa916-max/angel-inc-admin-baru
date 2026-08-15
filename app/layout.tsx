@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter, Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google';
 import { ToastProvider } from '@/components/ui/toast';
 import { SplashProvider } from '@/components/ui/splash-loader';
 import { ThemeProvider } from '@/components/providers/theme-provider';
@@ -16,6 +16,12 @@ const inter = Inter({
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-display',
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-serif',
   display: 'swap',
 });
 
@@ -50,7 +56,7 @@ export default function RootLayout({
 `;
 
   return (
-    <html lang="id" className={`${inter.variable} ${jakarta.variable}`} style={{ colorScheme: 'light' }} suppressHydrationWarning>
+    <html lang="id" className={`${inter.variable} ${jakarta.variable} ${playfair.variable}`} style={{ colorScheme: 'light' }} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

@@ -21,6 +21,7 @@ import {
   Settings,
   LogOut,
   ShieldCheck,
+  Globe,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -138,6 +139,18 @@ export default function MobileNav({
                   );
                 })}
               </nav>
+
+              <div className="mt-4 pt-3 border-t border-neutral-800">
+                <Link
+                  href="/"
+                  target="_blank"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl border border-neutral-800 bg-neutral-900/60 px-3.5 py-2.5 text-xs font-semibold text-neutral-300 hover:bg-neutral-800 hover:text-white transition"
+                >
+                  <Globe className="h-4 w-4 text-neutral-400" />
+                  <span>Lihat Website Toko</span>
+                </Link>
+              </div>
             </div>
 
             <div className="border-t border-neutral-800 pt-4">
