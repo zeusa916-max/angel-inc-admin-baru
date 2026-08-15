@@ -33,8 +33,27 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Inline script to apply theme before first paint — prevents dark flash
+  const themeScript = `
+(function(){
+  try {
+    var t = localStorage.getItem('angel_theme');
+    if (t === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
+    }
+  } catch(e) {}
+})();
+`;
+
   return (
-    <html lang="id" className={`${inter.variable} ${jakarta.variable}`}>
+    <html lang="id" className={`${inter.variable} ${jakarta.variable}`} style={{ colorScheme: 'light' }} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="font-sans antialiased bg-[#f8f9fa] dark:bg-[#0c0d0e] text-neutral-900 dark:text-neutral-100 selection:bg-neutral-900 selection:text-white transition-colors duration-200">
         <ThemeProvider>
           <CurrencyProvider>
