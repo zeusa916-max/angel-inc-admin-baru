@@ -13,12 +13,12 @@ export default function NewsletterSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !email.includes('@')) {
-      error('Silakan masukkan alamat email yang valid.');
+      error('Please enter a valid email address.');
       return;
     }
 
     setSubscribed(true);
-    success('Terima kasih telah berlangganan newsletter Angel Inc.!', 'Sukses');
+    success('You are now subscribed to the Angel Inc. Private Archive.', 'Subscribed');
     setEmail('');
   };
 
@@ -26,7 +26,7 @@ export default function NewsletterSection() {
     <section id="contact" className="py-24 bg-[#f8f7f4] dark:bg-[#121316] transition-colors duration-200">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center space-y-6">
         <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-neutral-400 dark:text-neutral-500">
-          STAY CONNECTED
+          THE INNER CIRCLE
         </p>
 
         <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-neutral-950 dark:text-white">
@@ -34,7 +34,7 @@ export default function NewsletterSection() {
         </h2>
 
         <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
-          Daftar untuk mendapatkan informasi koleksi wewangian terbaru, penawaran eksklusif member, dan rilis fashion Angel Inc.
+          Subscribe for privileged previews of new fragrance creations, private atelier events, and limited collection releases.
         </p>
 
         <form
@@ -45,7 +45,7 @@ export default function NewsletterSection() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Alamat email Anda..."
+            placeholder="Enter your email address..."
             required
             className="w-full bg-transparent text-sm text-neutral-900 dark:text-white outline-none placeholder:text-neutral-400 font-sans pr-4"
           />
@@ -60,7 +60,7 @@ export default function NewsletterSection() {
 
         {subscribed && (
           <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 animate-fade-in">
-            ✓ Anda telah terdaftar dalam daftar eksklusif kami.
+            ✓ You have been welcomed to the Angel Inc. private guest list.
           </p>
         )}
 

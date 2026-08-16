@@ -6,27 +6,27 @@ export default function ValuesSection() {
   const values = [
     {
       num: '01',
-      title: 'QUALITY',
+      title: 'ATELIER QUALITY',
       icon: Award,
-      desc: 'Memprioritaskan kualitas material, bahan baku murni, dan formulasi terbaik dalam setiap produk.',
+      desc: 'Uncompromising standards of rare essences, pure botanicals, and bespoke craftsmanship in every creation.',
     },
     {
       num: '02',
-      title: 'STYLE',
+      title: 'HAUTE AESTHETICS',
       icon: Compass,
-      desc: 'Desain yang elegan, abadi, dan selalu relevan dengan gaya hidup modern Anda.',
+      desc: 'Sculptural, timeless silhouettes designed to transcend seasons and elevate contemporary expression.',
     },
     {
       num: '03',
-      title: 'CONFIDENCE',
+      title: 'SIGNATURE PRESENCE',
       icon: Smile,
-      desc: 'Sentuhan wewangian dan busana yang membangkitkan rasa percaya diri prima di setiap langkah.',
+      desc: 'Evocative olfactory notes and tailored fabrics engineered to leave an indelible, lasting aura.',
     },
     {
       num: '04',
-      title: 'EXPERIENCE',
+      title: 'CONCIERGE EXPERIENCE',
       icon: Zap,
-      desc: 'Pengalaman belanja yang mulus, responsif, dan menyenangkan dari awal hingga produk tiba di tangan Anda.',
+      desc: 'Frictionless checkout, worldwide tracking, and white-glove service from our atelier to your doorstep.',
     },
   ];
 

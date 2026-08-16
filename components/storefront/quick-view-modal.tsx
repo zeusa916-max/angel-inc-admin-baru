@@ -93,8 +93,8 @@ export default function QuickViewModal() {
             <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800 space-y-4">
               {/* Quantity Selector */}
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
-                  Jumlah
+                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Quantity
                 </span>
                 <div className="flex items-center gap-3 rounded-xl border border-neutral-200 dark:border-neutral-700 px-3 py-1.5">
                   <button
@@ -124,7 +124,7 @@ export default function QuickViewModal() {
                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold tracking-wider uppercase transition hover:opacity-90 active:scale-95 shadow-md"
               >
                 <ShoppingBag className="h-4 w-4" />
-                <span>Tambahkan ke Keranjang</span>
+                <span>Add to Shopping Bag</span>
               </button>
             </div>
           </div>

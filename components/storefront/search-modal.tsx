@@ -76,7 +76,7 @@ export default function SearchModal() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari parfum, body mist, baju, atau sepatu..."
+            placeholder="Search fine fragrances, body care rituals, apparel..."
             className="w-full rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/60 py-4 pl-12 pr-4 font-serif text-lg text-neutral-900 dark:text-white outline-none focus:border-neutral-950 dark:focus:border-white focus:bg-white dark:focus:bg-neutral-900 transition"
           />
         </div>
@@ -85,7 +85,7 @@ export default function SearchModal() {
         <div className="max-h-80 overflow-y-auto space-y-2">
           {searchQuery.trim() && results.length === 0 ? (
             <div className="text-center py-8 text-neutral-400 text-xs">
-              Tidak ada produk yang cocok dengan "{searchQuery}".
+              No pieces found matching &ldquo;{searchQuery}&rdquo;.
             </div>
           ) : (
             results.map((product) => (

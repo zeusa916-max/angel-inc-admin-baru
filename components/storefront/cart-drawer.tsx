@@ -33,7 +33,7 @@ export default function CartDrawer() {
 
     const totalStr = `Rp ${cartTotal.toLocaleString('id-ID')}`;
     const text = encodeURIComponent(
-      `Halo Angel Inc., saya ingin memesan produk berikut:\n\n${itemsList}\n\n*Total:* ${totalStr}\n\nMohon info ketersediaan dan cara pembayarannya. Terima kasih!`
+      `Hello Angel Inc. Atelier, I would like to place an order for the following items:\n\n${itemsList}\n\n*Total:* ${totalStr}\n\nPlease advise on availability and payment details. Thank you.`
     );
 
     window.open(`https://wa.me/6281234567890?text=${text}`, '_blank');
@@ -61,7 +61,7 @@ export default function CartDrawer() {
             type="button"
             onClick={() => setIsCartOpen(false)}
             className="rounded-full p-2 text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-            aria-label="Close cart"
+            aria-label="Close bag"
           >
             <X className="h-5 w-5" />
           </button>
@@ -76,10 +76,10 @@ export default function CartDrawer() {
               </div>
               <div>
                 <h4 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                  Keranjang Anda masih kosong
+                  Your bag is currently empty
                 </h4>
                 <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 max-w-xs">
-                  Temukan parfum, body care, dan fashion terbaik di katalog Angel Inc.
+                  Discover fine fragrances, body care rituals, and atelier fashion in our catalog.
                 </p>
               </div>
               <button
@@ -87,7 +87,7 @@ export default function CartDrawer() {
                 onClick={() => setIsCartOpen(false)}
                 className="rounded-full bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-6 py-2.5 text-xs font-semibold uppercase tracking-wider"
               >
-                Mulai Belanja
+                Explore Collection
               </button>
             </div>
           ) : (
@@ -144,7 +144,7 @@ export default function CartDrawer() {
                       type="button"
                       onClick={() => removeFromCart(product.id)}
                       className="text-neutral-400 hover:text-rose-600 transition p-1"
-                      title="Hapus produk"
+                      title="Remove item"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -159,8 +159,8 @@ export default function CartDrawer() {
         {cart.length > 0 && (
           <div className="border-t border-neutral-100 dark:border-neutral-800 p-6 space-y-4 bg-[#faf9f6] dark:bg-[#101114]">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">
-                Total Belanja
+              <span className="text-xs text-neutral-500 dark:text-neutral-400 font-medium uppercase tracking-wider">
+                Order Subtotal
               </span>
               <span className="font-serif text-lg font-bold text-neutral-950 dark:text-white">
                 <Price amount={cartTotal} />
@@ -173,7 +173,7 @@ export default function CartDrawer() {
                 onClick={() => setIsCartOpen(false)}
                 className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 shadow-md active:scale-95 text-center"
               >
-                <span>Lanjut ke Checkout</span>
+                <span>Proceed to Checkout</span>
                 <ArrowRight className="h-3.5 w-3.5 opacity-80" />
               </Link>
 
@@ -182,7 +182,7 @@ export default function CartDrawer() {
                 onClick={clearCart}
                 className="w-full text-center text-[11px] text-neutral-400 hover:text-rose-600 py-1 transition"
               >
-                Kosongkan Keranjang
+                Clear Bag
               </button>
             </div>
           </div>

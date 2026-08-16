@@ -14,12 +14,12 @@ export default function AboutSection() {
             </p>
 
             <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.05] tracking-tight text-neutral-950 dark:text-white">
-              More than a product.<br />
-              <span className="italic font-normal">It's your expression.</span>
+              More than a creation.<br />
+              <span className="italic font-normal">It&apos;s your expression.</span>
             </h2>
 
             <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-normal leading-relaxed">
-              Angel Inc. hadir untuk menemani gaya hidup sehari-hari melalui produk fragrance, body care, dan fashion yang modern, nyaman, dan mudah dipilih. Setiap formula diracik dengan standar terbaik untuk memancarkan aura percaya diri Anda.
+              Angel Inc. was conceived as an atelier bridging fine perfumery, restorative botanical rituals, and contemporary couture. Each formulation is meticulously blended with rare essences to evoke an aura of effortless distinction and uncompromised confidence.
             </p>
 
             <div className="pt-2">
@@ -27,7 +27,7 @@ export default function AboutSection() {
                 href="#contact"
                 className="inline-flex items-center gap-2 rounded-full bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-8 py-4 text-xs font-semibold tracking-[0.14em] uppercase transition hover:opacity-90 active:scale-95 shadow-md"
               >
-                <span>Get to know us</span>
+                <span>Discover The Atelier</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </div>
@@ -61,7 +61,7 @@ export default function AboutSection() {
                       Mindful Craftsmanship
                     </h4>
                     <p className="text-[11px] text-neutral-300 mt-0.5 leading-relaxed">
-                      Setiap tetes wewangian dan jahitan busana diolah dengan dedikasi tinggi terhadap kualitas dan ketahanan.
+                      Every drop of fine fragrance and tailored silhouette is meticulously executed with profound devotion to longevity and form.
                     </p>
                   </div>
                 </div>
@@ -72,17 +72,17 @@ export default function AboutSection() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                      Ethical & Safe Standards
+                      Ethical & Pure Formulations
                     </h4>
                     <p className="text-[11px] text-neutral-300 mt-0.5 leading-relaxed">
-                      Formula ramah kulit, bebas dari bahan berbahaya, dan aman digunakan untuk aktivitas sehari-hari.
+                      Dermatologically refined, cruelty-free botanicals blended without parabens or harsh synthetic additives.
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="text-center text-[10px] font-serif italic text-neutral-400">
-                "Made in Paradise &bull; Designed for Your Everyday Expression"
+                &ldquo;Made in Paradise &bull; Designed for Your Everyday Expression&rdquo;
               </div>
             </div>
           </div>

@@ -249,7 +249,7 @@ export default function CheckoutPage() {
               <div>{placedOrder.shipping_address}</div>
             </div>
 
-            {/* Action CTAs */}
+              {/* Action CTAs */}
             <div className="space-y-3 pt-2">
               <a
                 href={`https://wa.me/6281234567890?text=${generateWhatsAppMessage()}`}
@@ -258,14 +258,14 @@ export default function CheckoutPage() {
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 shadow-md"
               >
                 <WhatsAppIcon className="h-4 w-4" />
-                <span>Kirim & Konfirmasi ke WhatsApp</span>
+                <span>Send & Confirm via WhatsApp Concierge</span>
               </a>
 
               <Link
                 href="/"
                 className="flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 dark:border-neutral-800 py-3 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
               >
-                <span>Kembali ke Katalog Toko</span>
+                <span>Return to Atelier Catalog</span>
               </Link>
             </div>
           </div>
@@ -282,15 +282,15 @@ export default function CheckoutPage() {
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-neutral-100 dark:bg-neutral-900 text-neutral-400">
             <ShoppingBag className="h-8 w-8" />
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-semibold">Keranjang Masih Kosong</h1>
+          <h1 className="font-serif text-2xl sm:text-3xl font-semibold">Your Bag is Empty</h1>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            Pilih produk wewangian atau busana Angel Inc. terlebih dahulu sebelum melanjutkan ke pembayaran.
+            Select pieces from our fine fragrance and atelier collections before proceeding to checkout.
           </p>
           <Link
             href="/#shop"
             className="inline-flex items-center gap-2 rounded-full bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition shadow-md"
           >
-            <span>Mulai Belanja</span>
+            <span>Explore Archive</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -308,7 +308,7 @@ export default function CheckoutPage() {
             className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white transition group"
           >
             <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
-            <span>Kembali ke Toko</span>
+            <span>Return to Boutique</span>
           </Link>
 
           <BrandLogo size="md" />
@@ -319,7 +319,7 @@ export default function CheckoutPage() {
             className="inline-flex items-center gap-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 px-3.5 py-1.5 text-xs font-semibold text-neutral-800 dark:text-neutral-200 hover:border-black dark:hover:border-white transition shadow-sm"
           >
             <Crown className="h-3.5 w-3.5 text-amber-500" />
-            <span>{member ? member.name : 'Login Member'}</span>
+            <span>{member ? member.name : 'Member Login'}</span>
           </button>
         </div>
 
@@ -335,10 +335,10 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                      Punya Akun Member?
+                      Have a Member Account?
                     </h4>
                     <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                      Login instan dengan No. HP untuk otomatis dapat diskon 5% & auto-fill alamat.
+                      Sign in seamlessly with phone OTP to apply 5% atelier privilege and auto-fill address.
                     </p>
                   </div>
                 </div>
@@ -348,7 +348,7 @@ export default function CheckoutPage() {
                   onClick={() => setIsMemberModalOpen(true)}
                   className="rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-4 py-2 text-xs font-bold uppercase tracking-wider hover:opacity-90 transition shrink-0"
                 >
-                  Masuk
+                  Sign In
                 </button>
               </div>
             ) : (
@@ -356,7 +356,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>
-                    Masuk sebagai <strong>{member.name}</strong> ({member.memberTier}) &bull; Diskon 5% aktif.
+                    Authenticated as <strong>{member.name}</strong> ({member.memberTier}) &bull; 5% atelier privilege active.
                   </span>
                 </div>
                 <button
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                   onClick={() => setIsMemberModalOpen(true)}
                   className="underline font-semibold hover:text-emerald-950 dark:hover:text-white ml-2"
                 >
-                  Ganti
+                  Switch
                 </button>
               </div>
             )}
@@ -374,35 +374,35 @@ export default function CheckoutPage() {
               <div className="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <User className="h-4 w-4 text-neutral-400" />
                 <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                  1. Informasi Penerima
+                  1. Recipient Information
                 </h3>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                    Nama Lengkap *
+                    Full Name *
                   </label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Contoh: Jessica Angelia"
+                    placeholder="e.g. Jessica Angelia"
                     className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                    Nomor WhatsApp / Telepon *
+                    WhatsApp / Phone Number *
                   </label>
                   <input
                     type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="081234567890"
+                    placeholder="+62 812-3456-7890"
                     className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                   />
                 </div>
@@ -410,13 +410,13 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Email (Opsional untuk Invoice)
+                  Email (Optional for Digital Receipt)
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jessica@example.com"
+                  placeholder="jessica@angelinc.id"
                   className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                 />
               </div>
@@ -427,13 +427,13 @@ export default function CheckoutPage() {
               <div className="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <MapPin className="h-4 w-4 text-neutral-400" />
                 <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                  2. Alamat Pengiriman
+                  2. Delivery Destination
                 </h3>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Alamat Lengkap (Jalan, No. Rumah, RT/RW, Kecamatan) *
+                  Street Address (Building, Street, District) *
                 </label>
                 <textarea
                   required
@@ -448,7 +448,7 @@ export default function CheckoutPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                    Kota / Wilayah
+                    City / Region
                   </label>
                   <select
                     value={city}
@@ -468,13 +468,13 @@ export default function CheckoutPage() {
                     <option value="Bandung">Bandung</option>
                     <option value="Surabaya">Surabaya</option>
                     <option value="Bali / Denpasar">Bali / Denpasar</option>
-                    <option value="Luar Pulau Jawa">Luar Pulau Jawa</option>
+                    <option value="Luar Pulau Jawa">International / Other Regions</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                    Kode Pos (Opsional)
+                    Postal Code (Optional)
                   </label>
                   <input
                     type="text"
@@ -488,13 +488,13 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Catatan untuk Kurir (Opsional)
+                  Delivery Notes (Optional)
                 </label>
                 <input
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Contoh: Titipkan di satpam jika tidak ada orang"
+                  placeholder="e.g. Leave with concierge desk upon delivery"
                   className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                 />
               </div>
@@ -506,12 +506,12 @@ export default function CheckoutPage() {
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4 text-neutral-400" />
                   <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                    3. Opsi Ekspedisi
+                    3. Courier Service
                   </h3>
                 </div>
                 {isFreeShipping && (
                   <span className="rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 uppercase tracking-wider">
-                    Gratis Ongkir Aktif
+                    Complimentary Shipping Active
                   </span>
                 )}
               </div>
@@ -554,7 +554,7 @@ export default function CheckoutPage() {
 
                       <div className="pt-3 mt-3 border-t border-neutral-100 dark:border-neutral-800 text-xs font-bold text-neutral-900 dark:text-white">
                         {priceToDisplay === 0 ? (
-                          <span className="text-emerald-600 dark:text-emerald-400">GRATIS</span>
+                          <span className="text-emerald-600 dark:text-emerald-400">COMPLIMENTARY</span>
                         ) : (
                           <Price amount={priceToDisplay} />
                         )}
@@ -570,7 +570,7 @@ export default function CheckoutPage() {
               <div className="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <CreditCard className="h-4 w-4 text-neutral-400" />
                 <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                  4. Metode Pembayaran
+                  4. Payment Method
                 </h3>
               </div>
 
@@ -595,7 +595,7 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                      QRIS Instant
+                      QRIS Instant Pay
                     </div>
                     <div className="text-[10px] text-neutral-400">
                       BCA, Mandiri, Gopay, OVO, ShopeePay
@@ -623,10 +623,10 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                      Transfer Bank Manual
+                      Bank Transfer
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      BCA Virtual Account / Mandiri
+                      BCA Virtual Account / Mandiri VA
                     </div>
                   </div>
                 </label>
@@ -654,7 +654,7 @@ export default function CheckoutPage() {
                       COD (Cash on Delivery)
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      Bayar tunai ke kurir saat paket tiba
+                      Pay cash upon delivery
                     </div>
                   </div>
                 </label>
@@ -679,10 +679,10 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                      Konfirmasi WhatsApp
+                      WhatsApp Concierge
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      Bantuan CS Angel Inc. langsung
+                      Direct customer assistance
                     </div>
                   </div>
                 </label>
@@ -695,10 +695,10 @@ export default function CheckoutPage() {
             <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-6">
               <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-4">
                 <h3 className="font-serif text-lg font-semibold text-neutral-900 dark:text-white">
-                  Ringkasan Belanja
+                  Order Summary
                 </h3>
                 <span className="text-xs font-bold text-neutral-400">
-                  {cart.reduce((a, c) => a + c.quantity, 0)} Item
+                  {cart.reduce((a, c) => a + c.quantity, 0)} Items
                 </span>
               </div>
 
@@ -735,28 +735,28 @@ export default function CheckoutPage() {
               {/* Price Calculation Table */}
               <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-4 space-y-2.5 text-xs border border-neutral-200/60 dark:border-neutral-800">
                 <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                  <span>Subtotal Produk</span>
+                  <span>Product Subtotal</span>
                   <Price amount={cartTotal} />
                 </div>
 
                 {memberDiscount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
-                    <span>Diskon Member (5%)</span>
+                    <span>Member Privilege (5%)</span>
                     <span>-<Price amount={memberDiscount} /></span>
                   </div>
                 )}
 
                 <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                  <span>Ongkos Kirim ({selectedShippingOption.courier})</span>
+                  <span>Shipping ({selectedShippingOption.courier})</span>
                   {shippingCost === 0 ? (
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">GRATIS</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">COMPLIMENTARY</span>
                   ) : (
                     <Price amount={shippingCost} />
                   )}
                 </div>
 
                 <div className="flex justify-between text-base font-bold text-neutral-900 dark:text-white pt-2.5 border-t border-neutral-200 dark:border-neutral-800">
-                  <span>Total Tagihan</span>
+                  <span>Total Amount</span>
                   <Price amount={finalTotal} />
                 </div>
               </div>
@@ -770,11 +770,11 @@ export default function CheckoutPage() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Memproses Pesanan…</span>
+                    <span>Placing Order…</span>
                   </>
                 ) : (
                   <>
-                    <span>Konfirmasi & Buat Pesanan</span>
+                    <span>Confirm & Place Order</span>
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
@@ -782,7 +782,7 @@ export default function CheckoutPage() {
 
               <div className="flex items-center justify-center gap-2 text-[10px] text-neutral-400 text-center">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                <span>Transaksi Terenkripsi & Terjamin Keamanannya</span>
+                <span>256-Bit Encrypted Secure Checkout</span>
               </div>
             </div>
           </div>

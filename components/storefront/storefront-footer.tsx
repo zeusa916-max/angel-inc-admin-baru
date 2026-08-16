@@ -27,12 +27,12 @@ export default function StorefrontFooter() {
           {/* Shop Column */}
           <div className="space-y-3">
             <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-400">
-              SHOP
+              COLLECTIONS
             </h4>
             <ul className="space-y-2 text-xs text-neutral-400 font-medium">
               <li>
                 <a href="#shop" className="hover:text-white transition">
-                  Parfume
+                  Eau de Parfum
                 </a>
               </li>
               <li>
@@ -42,27 +42,27 @@ export default function StorefrontFooter() {
               </li>
               <li>
                 <a href="#shop" className="hover:text-white transition">
-                  Body Wash
+                  Body Care Rituals
                 </a>
               </li>
               <li>
                 <a href="#shop" className="hover:text-white transition">
-                  Body Scrub
+                  Exfoliating Polish
                 </a>
               </li>
               <li>
                 <a href="#shop" className="hover:text-white transition">
-                  Baju & Apparel
+                  Haute Tees & Tops
                 </a>
               </li>
               <li>
                 <a href="#shop" className="hover:text-white transition">
-                  Jaket & Outerwear
+                  Runway Outerwear
                 </a>
               </li>
               <li>
                 <a href="#shop" className="hover:text-white transition">
-                  Sepatu & Sneakers
+                  Footwear & Sneakers
                 </a>
               </li>
             </ul>
@@ -71,32 +71,32 @@ export default function StorefrontFooter() {
           {/* Information Column */}
           <div className="space-y-3">
             <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-400">
-              INFORMATION
+              ATELIER
             </h4>
             <ul className="space-y-2 text-xs text-neutral-400 font-medium">
               <li>
                 <a href="#about" className="hover:text-white transition">
-                  About Us
+                  Philosophy & Heritage
                 </a>
               </li>
               <li>
                 <a href="#membership" className="hover:text-white transition">
-                  Membership
+                  Private Membership
                 </a>
               </li>
               <li>
                 <a href="#contact" className="hover:text-white transition">
-                  Contact & Care
+                  Concierge & Care
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition">
-                  FAQ & Ordering
+                  Complimentary Shipping
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-white transition">
-                  Shipping Policy
+                  Terms of Service
                 </a>
               </li>
               <li>
@@ -110,7 +110,7 @@ export default function StorefrontFooter() {
           {/* Portals & Connect Column */}
           <div className="space-y-3">
             <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-400">
-              PORTAL & SOSIAL
+              CONNECT & CARE
             </h4>
             <ul className="space-y-2.5 text-xs text-neutral-400 font-medium">
               <li>
@@ -143,7 +143,7 @@ export default function StorefrontFooter() {
                   className="group flex items-center gap-2 hover:text-white transition"
                 >
                   <WhatsAppIcon className="h-3.5 w-3.5 text-neutral-400 group-hover:text-white transition" />
-                  <span>WhatsApp Care</span>
+                  <span>WhatsApp Concierge</span>
                 </a>
               </li>
               <li className="pt-2">
@@ -153,7 +153,7 @@ export default function StorefrontFooter() {
                   className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-800 bg-neutral-900/80 px-3 py-1.5 text-[11px] font-bold text-neutral-400 hover:text-white hover:bg-neutral-800 transition"
                 >
                   <Shield className="h-3 w-3" />
-                  <span>Portal Admin</span>
+                  <span>Admin Portal</span>
                 </Link>
               </li>
             </ul>

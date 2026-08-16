@@ -6,21 +6,21 @@ export default function MembershipSection() {
   const benefits = [
     {
       num: '01',
-      title: 'Exclusive benefits',
+      title: 'Private Access',
       icon: Gift,
-      desc: 'Nikmati berbagai manfaat eksklusif yang dirancang khusus untuk member setia kami, termasuk akses awal ke rilisan produk terbaru.',
+      desc: 'Enjoy prioritized access to limited edition creations, runway capsules, and private salon drops before public release.',
     },
     {
       num: '02',
-      title: 'Exclusive voucher',
+      title: 'Member Privilege',
       icon: Tag,
-      desc: 'Dapatkan potongan harga istimewa, voucher ulang tahun, dan cashback poin belanja di setiap transaksi Anda.',
+      desc: 'Receive automatic 5% atelier savings, bespoke birthday vouchers, and tier rewards across all purchases.',
     },
     {
       num: '03',
-      title: 'Grow together',
+      title: 'Concierge Care',
       icon: TrendingUp,
-      desc: 'Dapatkan pengalaman eksklusif, undangan acara khusus, dan keistimewaan tak terbatas bersama komunitas Angel Inc.',
+      desc: 'Dedicated styling assistance, complimentary priority dispatch, and personalized fragrance consultations.',
     },
   ];
 
@@ -32,15 +32,15 @@ export default function MembershipSection() {
           <div className="lg:col-span-5 space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/80 px-3.5 py-1 text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-300">
               <Sparkles className="h-3 w-3 text-amber-400" />
-              <span>WORK WITH US</span>
+              <span>ATELIER GUILD</span>
             </div>
 
             <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.05] tracking-tight text-white">
-              Membership
+              The Membership
             </h2>
 
             <p className="text-sm sm:text-base text-neutral-400 font-normal leading-relaxed">
-              Join the Angel Inc. membership and enjoy exclusive benefits crafted for our inner circle.
+              Join the Angel Inc. inner circle and experience privileges tailored for our most discerning patrons.
             </p>
 
             <div className="pt-2">
@@ -48,7 +48,7 @@ export default function MembershipSection() {
                 href="#contact"
                 className="inline-flex items-center gap-2 rounded-full bg-white text-neutral-950 px-8 py-4 text-xs font-semibold tracking-[0.14em] uppercase transition hover:bg-neutral-200 active:scale-95 shadow-md"
               >
-                <span>Become a member</span>
+                <span>Join The Atelier</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </div>

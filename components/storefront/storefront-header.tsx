@@ -55,8 +55,8 @@ export default function StorefrontHeader() {
   return (
     <>
       {/* Top Announcement Bar */}
-      <div className="bg-[#141518] text-white py-1.5 px-4 text-center text-[10px] sm:text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-200">
-        FREE SHIPPING • DISCOVER THE ANGEL INC COLLECTION
+      <div className="bg-[#141518] text-white py-1.5 px-4 text-center text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] uppercase transition-colors duration-200">
+        COMPLIMENTARY WORLDWIDE DISPATCH &bull; DISCOVER THE ANGEL INC. ARCHIVE
       </div>
 
       {/* Main Sticky Header */}
@@ -93,7 +93,7 @@ export default function StorefrontHeader() {
               type="button"
               onClick={() => setMemberModalOpen(true)}
               className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 px-2.5 sm:px-3 py-1.5 text-[11px] font-bold text-neutral-800 dark:text-neutral-200 hover:border-black dark:hover:border-white transition shadow-sm"
-              title={member ? `Akun Member: ${member.name}` : 'Login Member / Daftar'}
+              title={member ? `Member Account: ${member.name}` : 'Atelier Member Login'}
             >
               <Crown className="h-3.5 w-3.5 text-amber-500" />
               <span className="hidden sm:inline">{member ? member.name.split(' ')[0] : 'Member'}</span>
@@ -104,7 +104,7 @@ export default function StorefrontHeader() {
               type="button"
               onClick={() => setCurrency(currency === 'IDR' ? 'USD' : 'IDR')}
               className="hidden sm:inline-flex items-center gap-1 rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 px-2.5 py-1.5 text-[11px] font-bold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-              title="Ganti mata uang (IDR / USD)"
+              title="Switch currency (IDR / USD)"
             >
               <DollarSign className="h-3.5 w-3.5 text-neutral-500" />
               <span>{currency}</span>
@@ -116,7 +116,7 @@ export default function StorefrontHeader() {
               onClick={toggleTheme}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-200/80 dark:border-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
               title="Toggle Light / Dark mode"
-              aria-label="Toggle tema"
+              aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
                 <Sun className="h-4 w-4 text-amber-400" />
@@ -130,7 +130,7 @@ export default function StorefrontHeader() {
               type="button"
               onClick={() => setIsSearchOpen(true)}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-200/80 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-              title="Cari produk"
+              title="Search collection"
               aria-label="Search"
             >
               <Search className="h-4 w-4" />
