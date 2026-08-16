@@ -103,3 +103,12 @@ VALUES
         760000
     )
 ON CONFLICT (id) DO NOTHING;
+
+-- 5. SEED FOTO PRODUK (LUXURY MONOCHROME MOCKUPS)
+INSERT INTO public.product_images (id, product_id, storage_path, public_url, is_primary)
+VALUES
+    ('i1111111-1111-1111-1111-111111111111', 'p1111111-1111-1111-1111-111111111111', 'products/shirt-1.jpg', 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop', true),
+    ('i2222222-2222-2222-2222-222222222222', 'p2222222-2222-2222-2222-222222222222', 'products/blazer-1.jpg', 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop', true),
+    ('i3333333-3333-3333-3333-333333333333', 'p3333333-3333-3333-3333-333333333333', 'products/pants-1.jpg', 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=800&auto=format&fit=crop', true),
+    ('i4444444-4444-4444-4444-444444444444', 'p4444444-4444-4444-4444-444444444444', 'products/belt-1.jpg', 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=800&auto=format&fit=crop', true)
+ON CONFLICT (id) DO NOTHING;

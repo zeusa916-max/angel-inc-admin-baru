@@ -54,7 +54,16 @@ export const MOCK_PRODUCTS: Product[] = [
     created_at: '2026-01-15T12:00:00Z',
     updated_at: '2026-01-15T12:00:00Z',
     categories: MOCK_CATEGORIES[0],
-    product_images: [],
+    product_images: [
+      {
+        id: 'img-1',
+        product_id: 'a1111111-1111-4111-a111-111111111111',
+        storage_path: 'products/shirt-1.jpg',
+        public_url: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop',
+        is_primary: true,
+        created_at: '2026-01-15T12:00:00Z',
+      },
+    ],
   },
   {
     id: 'a2222222-2222-4222-a222-222222222222',
@@ -70,7 +79,16 @@ export const MOCK_PRODUCTS: Product[] = [
     created_at: '2026-01-16T12:00:00Z',
     updated_at: '2026-01-16T12:00:00Z',
     categories: MOCK_CATEGORIES[1],
-    product_images: [],
+    product_images: [
+      {
+        id: 'img-2',
+        product_id: 'a2222222-2222-4222-a222-222222222222',
+        storage_path: 'products/blazer-1.jpg',
+        public_url: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop',
+        is_primary: true,
+        created_at: '2026-01-16T12:00:00Z',
+      },
+    ],
   },
   {
     id: 'a3333333-3333-4333-a333-333333333333',
@@ -86,7 +104,16 @@ export const MOCK_PRODUCTS: Product[] = [
     created_at: '2026-01-17T12:00:00Z',
     updated_at: '2026-01-17T12:00:00Z',
     categories: MOCK_CATEGORIES[2],
-    product_images: [],
+    product_images: [
+      {
+        id: 'img-3',
+        product_id: 'a3333333-3333-4333-a333-333333333333',
+        storage_path: 'products/pants-1.jpg',
+        public_url: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=800&auto=format&fit=crop',
+        is_primary: true,
+        created_at: '2026-01-17T12:00:00Z',
+      },
+    ],
   },
   {
     id: 'a4444444-4444-4444-a444-444444444444',
@@ -102,7 +129,16 @@ export const MOCK_PRODUCTS: Product[] = [
     created_at: '2026-01-18T12:00:00Z',
     updated_at: '2026-01-18T12:00:00Z',
     categories: MOCK_CATEGORIES[3],
-    product_images: [],
+    product_images: [
+      {
+        id: 'img-4',
+        product_id: 'a4444444-4444-4444-a444-444444444444',
+        storage_path: 'products/belt-1.jpg',
+        public_url: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?q=80&w=800&auto=format&fit=crop',
+        is_primary: true,
+        created_at: '2026-01-18T12:00:00Z',
+      },
+    ],
   },
 ];
 
