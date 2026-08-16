@@ -73,10 +73,32 @@ export default function ProductCollection({ initialFilter = 'all' }: ProductColl
                 className="group relative flex flex-col justify-between rounded-3xl border border-neutral-200/70 dark:border-neutral-800/90 bg-white dark:bg-[#141518] p-4 sm:p-5 shadow-subtle hover:shadow-card transition-all duration-300 hover:-translate-y-1"
               >
                 {/* Product Visual Container */}
-                <div className="relative aspect-[4/5] w-full rounded-2xl bg-gradient-to-b from-neutral-100 to-neutral-200/70 dark:from-neutral-800 dark:to-neutral-900/90 flex flex-col items-center justify-center p-6 text-center overflow-hidden mb-4">
+                <div className="relative aspect-[4/5] w-full rounded-2xl bg-neutral-100 dark:bg-neutral-900 flex flex-col items-center justify-center overflow-hidden mb-4 border border-neutral-200/60 dark:border-neutral-800/80">
+                  {/* Real Luxury Mockup Image */}
+                  {product.imageUrl ? (
+                    <div className="relative h-full w-full overflow-hidden bg-neutral-950">
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="h-full w-full object-cover object-center grayscale contrast-125 transition-transform duration-700 ease-out group-hover:scale-110 opacity-95 group-hover:opacity-100"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
+                    </div>
+                  ) : (
+                    <div className="my-auto space-y-2 transition-transform duration-500 group-hover:scale-105 p-6 text-center">
+                      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 dark:bg-neutral-900/80 shadow-md text-neutral-900 dark:text-white border border-neutral-200/40 dark:border-neutral-700">
+                        <Sparkles className="h-6 w-6 text-amber-500" />
+                      </div>
+                      <span className="block text-[10px] font-bold tracking-[0.2em] text-neutral-400 dark:text-neutral-500 uppercase">
+                        {product.categoryName}
+                      </span>
+                    </div>
+                  )}
+
                   {/* Badge */}
                   {product.badge && (
-                    <div className="absolute left-3 top-3 rounded-full bg-neutral-950/80 dark:bg-white/90 backdrop-blur-md px-2.5 py-0.5 text-[9px] font-bold tracking-widest uppercase text-white dark:text-neutral-950 z-10 shadow-sm">
+                    <div className="absolute left-3 top-3 rounded-full bg-black/80 dark:bg-white/90 backdrop-blur-md px-2.5 py-0.5 text-[9px] font-bold tracking-widest uppercase text-white dark:text-black z-10 shadow-md">
                       {product.badge}
                     </div>
                   )}
@@ -85,33 +107,23 @@ export default function ProductCollection({ initialFilter = 'all' }: ProductColl
                   <button
                     type="button"
                     onClick={() => toggleWishlist(product.id)}
-                    className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md text-neutral-600 dark:text-neutral-300 shadow-sm hover:scale-110 active:scale-95 transition z-10"
+                    className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md text-neutral-600 dark:text-neutral-300 shadow-md hover:scale-110 active:scale-95 transition z-10"
                     aria-label="Wishlist"
                   >
                     <Heart
                       className={`h-4 w-4 transition ${
                         isWishlisted
                           ? 'fill-rose-500 text-rose-500'
-                          : 'text-neutral-600 dark:text-neutral-300'
+                          : 'text-neutral-700 dark:text-neutral-200'
                       }`}
                     />
                   </button>
-
-                  {/* Placeholder Luxury Artwork Box */}
-                  <div className="my-auto space-y-2 transition-transform duration-500 group-hover:scale-105">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 dark:bg-neutral-900/80 shadow-md text-neutral-900 dark:text-white border border-neutral-200/40 dark:border-neutral-700">
-                      <Sparkles className="h-6 w-6 text-amber-500" />
-                    </div>
-                    <span className="block text-[10px] font-bold tracking-[0.2em] text-neutral-400 dark:text-neutral-500 uppercase">
-                      {product.categoryName}
-                    </span>
-                  </div>
 
                   {/* Hover Quick View Button */}
                   <button
                     type="button"
                     onClick={() => openQuickView(product)}
-                    className="absolute bottom-3 inset-x-3 rounded-xl bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md py-2.5 text-[10px] font-bold tracking-widest uppercase text-neutral-900 dark:text-white shadow-md opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 flex items-center justify-center gap-1.5"
+                    className="absolute bottom-3 inset-x-3 rounded-xl bg-white/95 dark:bg-black/90 backdrop-blur-md py-2.5 text-[10px] font-bold tracking-widest uppercase text-neutral-900 dark:text-white shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black flex items-center justify-center gap-1.5 z-10 border border-neutral-200 dark:border-neutral-700"
                   >
                     <Eye className="h-3.5 w-3.5" />
                     <span>Quick View</span>

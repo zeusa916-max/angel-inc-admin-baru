@@ -59,10 +59,10 @@ export default function CategoryStrip({
                   <Icon className="h-7 w-7 sm:h-8 sm:w-8 transition duration-300 group-hover:text-black dark:group-hover:text-white" />
                 </div>
 
-                <span className="text-[10px] font-bold tracking-widest text-neutral-400 dark:text-neutral-500 uppercase mb-1">
+                <span className="text-[9px] font-bold tracking-[0.2em] text-neutral-400 dark:text-neutral-500 uppercase mb-1">
                   {cat.tag}
                 </span>
-                <span className="text-xs sm:text-sm font-semibold text-neutral-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition">
+                <span className="text-xs sm:text-sm font-semibold text-neutral-900 dark:text-white group-hover:underline underline-offset-4 transition">
                   {cat.name}
                 </span>
                 <span className="text-[10px] text-neutral-400 dark:text-neutral-500 mt-0.5">

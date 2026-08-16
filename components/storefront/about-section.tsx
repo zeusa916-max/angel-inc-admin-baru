@@ -34,47 +34,56 @@ export default function AboutSection() {
           </div>
 
           {/* Right Column: Visual Brand Story Card */}
-          <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-gradient-to-br from-neutral-100 via-[#f4f2eb] to-neutral-200 dark:from-neutral-900 dark:via-neutral-950 dark:to-neutral-900 border border-neutral-200/80 dark:border-neutral-800 p-8 shadow-card flex flex-col justify-between">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2 rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200">
-                <Sparkles className="h-3 w-3 text-amber-500" />
-                <span>ANGEL PHILOSOPHY</span>
-              </div>
-              <span className="text-[10px] font-mono text-neutral-400">EST. 2026</span>
-            </div>
+          <div className="group relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-neutral-950 border border-neutral-200/80 dark:border-neutral-800 shadow-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1200&auto=format&fit=crop"
+              alt="Angel Inc. Atelier Craftsmanship"
+              className="h-full w-full object-cover object-center grayscale contrast-125 brightness-90 transition-transform duration-1000 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30" />
 
-            <div className="my-auto space-y-6">
-              <div className="p-5 rounded-2xl bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm border border-neutral-200/50 dark:border-neutral-800 shadow-subtle flex items-start gap-4">
-                <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                  <Heart className="h-5 w-5" />
+            <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white">
+                  <Sparkles className="h-3 w-3 text-amber-400" />
+                  <span>ANGEL PHILOSOPHY</span>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-neutral-900 dark:text-white uppercase tracking-wider">
-                    Mindful Craftsmanship
-                  </h4>
-                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
-                    Setiap tetes wewangian dan jahitan busana diolah dengan dedikasi tinggi terhadap kualitas dan ketahanan.
-                  </p>
-                </div>
+                <span className="text-[10px] font-mono text-neutral-300">EST. 2026</span>
               </div>
 
-              <div className="p-5 rounded-2xl bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm border border-neutral-200/50 dark:border-neutral-800 shadow-subtle flex items-start gap-4">
-                <div className="h-10 w-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="h-5 w-5" />
+              <div className="space-y-3">
+                <div className="p-4 rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 shadow-xl flex items-start gap-3.5">
+                  <div className="h-9 w-9 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
+                    <Heart className="h-4 w-4 fill-black" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Mindful Craftsmanship
+                    </h4>
+                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-relaxed">
+                      Setiap tetes wewangian dan jahitan busana diolah dengan dedikasi tinggi terhadap kualitas dan ketahanan.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-neutral-900 dark:text-white uppercase tracking-wider">
-                    Ethical & Safe Standards
-                  </h4>
-                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
-                    Formula ramah kulit, bebas dari bahan berbahaya, dan aman digunakan untuk aktivitas sehari-hari.
-                  </p>
+
+                <div className="p-4 rounded-2xl bg-black/50 backdrop-blur-md border border-white/15 shadow-xl flex items-start gap-3.5">
+                  <div className="h-9 w-9 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
+                    <ShieldCheck className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Ethical & Safe Standards
+                    </h4>
+                    <p className="text-[11px] text-neutral-300 mt-0.5 leading-relaxed">
+                      Formula ramah kulit, bebas dari bahan berbahaya, dan aman digunakan untuk aktivitas sehari-hari.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="text-center text-[11px] font-serif italic text-neutral-500 dark:text-neutral-400">
-              "Made in Paradise &bull; Designed for Your Everyday Expression"
+              <div className="text-center text-[10px] font-serif italic text-neutral-400">
+                "Made in Paradise &bull; Designed for Your Everyday Expression"
+              </div>
             </div>
           </div>
         </div>

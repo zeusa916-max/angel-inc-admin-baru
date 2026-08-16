@@ -39,13 +39,23 @@ export default function QuickViewModal() {
 
         <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-center">
           {/* Visual Container */}
-          <div className="aspect-square w-full rounded-2xl bg-gradient-to-br from-neutral-100 to-neutral-200/80 dark:from-neutral-800 dark:to-neutral-900 flex flex-col items-center justify-center p-6 text-center border border-neutral-200/60 dark:border-neutral-700/60">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white/90 dark:bg-neutral-900/90 text-neutral-900 dark:text-white shadow-lg mb-3">
-              <Sparkles className="h-8 w-8 text-amber-500" />
-            </div>
-            <span className="text-xs font-bold tracking-[0.2em] text-neutral-400 uppercase">
-              {quickViewProduct.categoryName}
-            </span>
+          <div className="aspect-square w-full rounded-2xl bg-neutral-950 flex flex-col items-center justify-center overflow-hidden border border-neutral-200/80 dark:border-neutral-700/80 relative">
+            {quickViewProduct.imageUrl ? (
+              <img
+                src={quickViewProduct.imageUrl}
+                alt={quickViewProduct.name}
+                className="h-full w-full object-cover object-center grayscale contrast-125 brightness-95"
+              />
+            ) : (
+              <div className="p-6 text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white/90 dark:bg-neutral-900/90 text-neutral-900 dark:text-white shadow-lg mb-3 mx-auto">
+                  <Sparkles className="h-8 w-8 text-amber-500" />
+                </div>
+                <span className="text-xs font-bold tracking-[0.2em] text-neutral-400 uppercase">
+                  {quickViewProduct.categoryName}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Details & Action */}

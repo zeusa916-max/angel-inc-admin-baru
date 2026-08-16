@@ -57,45 +57,55 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column: Hero Visual Artwork */}
+          {/* Right Column: Hero Luxury Editorial Showcase */}
           <div className="relative flex items-center justify-center">
-            <div className="relative w-full aspect-[4/5] max-w-md lg:max-w-none rounded-3xl overflow-hidden bg-gradient-to-tr from-neutral-200 via-neutral-100 to-amber-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-950 border border-neutral-200/60 dark:border-neutral-800 p-8 shadow-2xl flex flex-col justify-between">
-              {/* Decorative Luxury Overlay */}
-              <div className="flex justify-between items-start">
-                <div className="rounded-full bg-white/90 dark:bg-black/60 backdrop-blur-md px-3.5 py-1 text-[10px] font-bold tracking-widest uppercase text-neutral-900 dark:text-white">
-                  EDITORIAL 2026
-                </div>
-                <div className="text-right">
-                  <div className="font-serif text-xs italic text-neutral-500 dark:text-neutral-400">Made in Paradise</div>
-                  <div className="text-[10px] font-semibold text-neutral-800 dark:text-neutral-200 uppercase tracking-wider">Angel Inc. Studio</div>
-                </div>
-              </div>
+            <div className="group relative w-full aspect-[4/5] max-w-md lg:max-w-none rounded-3xl overflow-hidden bg-neutral-950 border border-neutral-200/80 dark:border-neutral-800 shadow-2xl">
+              {/* Luxury Editorial Background Photo */}
+              <img
+                src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop"
+                alt="Angel Inc. Haute Couture Campaign"
+                className="h-full w-full object-cover object-center grayscale contrast-125 brightness-90 transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/40" />
 
-              {/* Center Artwork / Visual Motif */}
-              <div className="my-auto text-center space-y-3 py-12">
-                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 shadow-2xl transition duration-500 hover:scale-105">
-                  <span className="font-serif text-4xl font-light italic">A</span>
+              {/* Decorative Luxury Overlay Content */}
+              <div className="absolute inset-0 p-6 sm:p-8 flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <div className="rounded-full bg-black/60 backdrop-blur-md border border-white/20 px-3.5 py-1 text-[10px] font-bold tracking-[0.2em] uppercase text-white shadow-lg">
+                    EDITORIAL 2026
+                  </div>
+                  <div className="text-right">
+                    <div className="font-serif text-xs italic text-neutral-300">Made in Paradise</div>
+                    <div className="text-[10px] font-semibold text-white uppercase tracking-wider">Angel Inc. Studio</div>
+                  </div>
                 </div>
-                <div className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-neutral-900 dark:text-white">
-                  Signature Fragrance & Fashion
-                </div>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-xs mx-auto">
-                  A timeless blend of pure botanicals, silk, and contemporary aesthetics.
-                </p>
-              </div>
 
-              {/* Bottom Card Tag */}
-              <div className="rounded-2xl bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md p-4 border border-neutral-200/60 dark:border-neutral-800 flex items-center justify-between shadow-subtle">
-                <div>
-                  <div className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Featured Release</div>
-                  <div className="text-xs font-semibold text-neutral-900 dark:text-white">Angel Inc. Signature Parfum</div>
+                {/* Center Branding Motif */}
+                <div className="text-center space-y-2 py-6">
+                  <span className="font-serif text-5xl sm:text-6xl text-white/90 italic font-light">
+                    A
+                  </span>
+                  <div className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-white">
+                    Signature Fragrance & Fashion
+                  </div>
+                  <p className="text-xs text-neutral-300/80 max-w-xs mx-auto">
+                    A timeless blend of pure botanicals, silk, and contemporary aesthetics.
+                  </p>
                 </div>
-                <a
-                  href="#shop"
-                  className="rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider hover:opacity-80 transition"
-                >
-                  View
-                </a>
+
+                {/* Bottom Card Tag */}
+                <div className="rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/20 flex items-center justify-between shadow-2xl">
+                  <div>
+                    <div className="text-[9px] font-bold text-neutral-300 uppercase tracking-widest">Featured Release</div>
+                    <div className="text-xs font-semibold text-white">Angel Inc. Signature Parfum</div>
+                  </div>
+                  <a
+                    href="#shop"
+                    className="rounded-xl bg-white text-black px-4 py-2 text-[11px] font-bold uppercase tracking-wider hover:bg-neutral-200 transition shadow-md"
+                  >
+                    View
+                  </a>
+                </div>
               </div>
             </div>
           </div>

@@ -8,30 +8,36 @@ export default function EditorialSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Column: Featured Editorial Visual Artwork */}
-          <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-gradient-to-tr from-neutral-200 via-neutral-100 to-amber-100/60 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-950 border border-neutral-200/80 dark:border-neutral-800 p-8 shadow-card flex flex-col justify-between">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-500 dark:text-neutral-400">
-                ANGEL INC. EDIT
-              </span>
-              <span className="text-[10px] font-mono text-neutral-400">
-                VOL. 01 / 2026
-              </span>
-            </div>
+          <div className="group relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden bg-neutral-950 border border-neutral-200/80 dark:border-neutral-800 shadow-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop"
+              alt="Angel Inc. Editorial Lookbook"
+              className="h-full w-full object-cover object-center grayscale contrast-125 brightness-95 transition-transform duration-1000 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30" />
 
-            <div className="my-auto text-center space-y-4 py-8">
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-white/90 dark:bg-black/60 shadow-xl text-neutral-900 dark:text-white backdrop-blur-md">
-                <Sparkles className="h-8 w-8 text-amber-500" />
+            <div className="absolute inset-0 p-8 flex flex-col justify-between">
+              <div className="flex justify-between items-center">
+                <span className="rounded-full bg-black/60 backdrop-blur-md border border-white/20 px-3 py-1 text-[9px] font-bold tracking-[0.2em] uppercase text-white">
+                  ANGEL INC. EDIT
+                </span>
+                <span className="text-[10px] font-mono text-neutral-300">
+                  VOL. 01 / 2026
+                </span>
               </div>
-              <div className="font-serif text-3xl sm:text-4xl font-medium tracking-tight text-neutral-900 dark:text-white max-w-xs mx-auto">
-                The Paradise Standard
-              </div>
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-xs mx-auto">
-                Harmoni sempurna antara wewangian aromatik murni dan estetika pakaian berkelas.
-              </p>
-            </div>
 
-            <div className="text-center text-[10px] tracking-widest text-neutral-400 uppercase font-semibold">
-              EAU DE PARFUM &bull; BODY CARE &bull; ATELIER
+              <div className="space-y-2">
+                <div className="font-serif text-3xl sm:text-4xl font-medium tracking-tight text-white">
+                  The Paradise Standard
+                </div>
+                <p className="text-xs text-neutral-300 max-w-xs">
+                  Harmoni sempurna antara wewangian aromatik murni dan estetika pakaian berkelas.
+                </p>
+              </div>
+
+              <div className="text-[9px] tracking-[0.2em] text-neutral-400 uppercase font-semibold">
+                EAU DE PARFUM &bull; BODY CARE &bull; ATELIER
+              </div>
             </div>
           </div>
 

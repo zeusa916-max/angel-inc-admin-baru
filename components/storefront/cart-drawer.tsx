@@ -92,8 +92,16 @@ export default function CartDrawer() {
             cart.map(({ product, quantity }) => (
               <div key={product.id} className="py-4 flex gap-4 items-center">
                 {/* Item Thumbnail */}
-                <div className="h-16 w-16 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                  <Sparkles className="h-6 w-6 text-amber-500" />
+                <div className="h-16 w-16 rounded-xl bg-neutral-950 flex items-center justify-center shrink-0 overflow-hidden border border-neutral-200 dark:border-neutral-800">
+                  {product.imageUrl ? (
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="h-full w-full object-cover object-center grayscale contrast-125 brightness-95"
+                    />
+                  ) : (
+                    <Sparkles className="h-6 w-6 text-amber-500" />
+                  )}
                 </div>
 
                 {/* Item Info */}

@@ -58,6 +58,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     description: 'Parfum mewah berkarakter lembut dengan sentuhan vanila surgawi, amber hangat, dan white floral. Dirancang untuk menemani momen paling berharga Anda sepanjang hari.',
     badge: 'Best Seller',
     stock: 24,
+    imageUrl: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-bm-01',
@@ -69,6 +70,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     description: 'Body mist menyegarkan dengan paduan aroma buah pir segar dan kelopak mawar pagi hari. Ringan, lembut, dan cocok untuk disemprotkan setiap saat.',
     badge: 'Popular',
     stock: 45,
+    imageUrl: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-bw-01',
@@ -79,6 +81,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     discountPrice: null,
     description: 'Sabun mandi dengan formula busa melimpah dan aroma wewangian mewah tahan lama. Membersihkan kulit secara menyeluruh tanpa membuatnya kering.',
     stock: 30,
+    imageUrl: 'https://images.unsplash.com/photo-1608248597359-0a2569ac9674?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-bs-01',
@@ -89,6 +92,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     discountPrice: null,
     description: 'Scrub tubuh dengan butiran mikro halus yang mengangkat sel kulit mati dengan lembut, diperkaya ekstrak minyak jojoba untuk kulit cerah dan sehalus sutra.',
     stock: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-tee-01',
@@ -100,6 +104,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     description: 'Kaos berbahan 100% combed cotton premium dengan potongan santai khas Angel Inc. Halus, adem, dan menyerap keringat dengan sempurna.',
     badge: 'Essential',
     stock: 50,
+    imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-jkt-01',
@@ -111,6 +116,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     description: 'Jaket kasual kontemporer dengan material tahan angin bertekstur matte dan detail monogram eksklusif. Pilihan tepat untuk gaya streetwear elegan.',
     badge: 'Trending',
     stock: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-snk-01',
@@ -122,6 +128,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     description: 'Sneakers putih minimalis dengan insole ultra-cushioned yang sangat nyaman untuk pemakaian seharian. Paduan sempurna antara estetika dan kenyamanan.',
     badge: 'New',
     stock: 12,
+    imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'prod-bm-02',
@@ -132,6 +139,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
     discountPrice: null,
     description: 'Aroma manis nan menggoda dari berry liar, kelopak peony merah muda, dan sentuhan kayu cashmere yang memikat.',
     stock: 35,
+    imageUrl: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800&auto=format&fit=crop',
   },
 ];
 

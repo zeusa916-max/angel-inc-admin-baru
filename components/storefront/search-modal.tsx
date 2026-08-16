@@ -98,8 +98,16 @@ export default function SearchModal() {
                 className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-neutral-50 dark:hover:bg-neutral-900/80 cursor-pointer transition border border-transparent hover:border-neutral-200/60 dark:hover:border-neutral-800"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                    <Sparkles className="h-5 w-5 text-amber-500" />
+                  <div className="h-12 w-12 rounded-xl bg-neutral-950 flex items-center justify-center shrink-0 overflow-hidden border border-neutral-200 dark:border-neutral-800">
+                    {product.imageUrl ? (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="h-full w-full object-cover object-center grayscale contrast-125 brightness-95"
+                      />
+                    ) : (
+                      <Sparkles className="h-5 w-5 text-amber-500" />
+                    )}
                   </div>
                   <div>
                     <span className="text-[9px] font-bold tracking-widest text-neutral-400 uppercase">
