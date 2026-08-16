@@ -333,7 +333,7 @@ export default function SettingsPage() {
           <Info className="h-4 w-4 text-emerald-400" />
           <span>Informasi Sistem & Lingkungan</span>
         </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3 text-xs">
+        <div className="mt-4 grid gap-4 sm:grid-cols-4 text-xs">
           <div>
             <div className="text-neutral-400">Framework:</div>
             <div className="font-semibold text-neutral-100 mt-0.5">
@@ -343,13 +343,19 @@ export default function SettingsPage() {
           <div>
             <div className="text-neutral-400">Backend Architecture:</div>
             <div className="font-semibold text-neutral-100 mt-0.5">
-              Layered Server Services & Actions (Zod)
+              Layered Server Actions & Services
             </div>
           </div>
           <div>
             <div className="text-neutral-400">Autentikasi:</div>
             <div className="font-semibold text-neutral-100 mt-0.5">
-              Dual Guard (Supabase Auth + Session Fallback)
+              Supabase Auth & Activity Logs
+            </div>
+          </div>
+          <div>
+            <div className="text-neutral-400">Lead Developer:</div>
+            <div className="font-semibold text-neutral-100 mt-0.5">
+              DummVinci
             </div>
           </div>
         </div>

@@ -125,9 +125,17 @@ angel-inc-admin/
 
 ---
 
+## 👥 ₊˚ Kontributor & Author
+
+- **Lead Architect & Developer**: **DummVinci**
+- **Brand & Production**: **ANGEL INC.** &copy; 2026
+
+---
+
 <div align="center">
 
 ### ౨ৎ ₊˚ Made with pure love & angelic grace ₊˚ ౨ৎ
 **ANGEL INC. — *Made in Paradise*** 🕊️✨
+*Crafted by **DummVinci***
 
 </div>

@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useStorefront } from './storefront-context';
 import { Price } from '@/components/providers/currency-provider';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Sparkles } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/social-icons';
 
 export default function CartDrawer() {
   const {
@@ -166,14 +168,14 @@ export default function CartDrawer() {
             </div>
 
             <div className="space-y-2">
-              <button
-                type="button"
-                onClick={handleCheckoutWhatsApp}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 shadow-md active:scale-95"
+              <Link
+                href="/checkout"
+                onClick={() => setIsCartOpen(false)}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 shadow-md active:scale-95 text-center"
               >
-                <span>Checkout via WhatsApp</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
+                <span>Lanjut ke Checkout</span>
+                <ArrowRight className="h-3.5 w-3.5 opacity-80" />
+              </Link>
 
               <button
                 type="button"

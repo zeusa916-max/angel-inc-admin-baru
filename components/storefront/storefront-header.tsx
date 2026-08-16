@@ -15,7 +15,11 @@ import {
   Sun,
   Moon,
   DollarSign,
+  Crown,
+  User,
 } from 'lucide-react';
+import MemberAuthModal from './member-auth-modal';
+import { getMemberSessionAction, MemberSession } from '@/server/actions/member.actions';
 
 export default function StorefrontHeader() {
   const { cartCount, setIsCartOpen, setIsSearchOpen } = useStorefront();
@@ -23,6 +27,8 @@ export default function StorefrontHeader() {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [member, setMember] = useState<MemberSession | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +36,12 @@ export default function StorefrontHeader() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    getMemberSessionAction().then((res) => {
+      if (res.success && res.data) setMember(res.data);
+    });
   }, []);
 
   const navLinks = [
@@ -76,6 +88,17 @@ export default function StorefrontHeader() {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2.5">
+            {/* Member Profile / Auth Button */}
+            <button
+              type="button"
+              onClick={() => setMemberModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 px-2.5 sm:px-3 py-1.5 text-[11px] font-bold text-neutral-800 dark:text-neutral-200 hover:border-black dark:hover:border-white transition shadow-sm"
+              title={member ? `Akun Member: ${member.name}` : 'Login Member / Daftar'}
+            >
+              <Crown className="h-3.5 w-3.5 text-amber-500" />
+              <span className="hidden sm:inline">{member ? member.name.split(' ')[0] : 'Member'}</span>
+            </button>
+
             {/* Currency Switcher */}
             <button
               type="button"
@@ -136,6 +159,21 @@ export default function StorefrontHeader() {
           </div>
         </div>
       </header>
+
+      {/* Member Phone + OTP Auth Modal */}
+      <MemberAuthModal
+        isOpen={memberModalOpen}
+        onClose={() => {
+          setMemberModalOpen(false);
+          getMemberSessionAction().then((res) => {
+            if (res.success) setMember(res.data);
+          });
+        }}
+        onSuccess={(m) => {
+          setMember(m);
+          setMemberModalOpen(false);
+        }}
+      />
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (

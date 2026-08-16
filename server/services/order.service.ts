@@ -102,6 +102,139 @@ export class OrderService {
     }
   }
 
+  static async create(payload: {
+    customerName: string;
+    customerPhone: string;
+    customerEmail?: string;
+    shippingAddress: string;
+    shippingCity?: string;
+    shippingCourier?: string;
+    shippingCost?: number;
+    paymentMethod?: string;
+    notes?: string;
+    items: {
+      productId?: string;
+      name: string;
+      quantity: number;
+      price: number;
+    }[];
+  }): Promise<Order> {
+    const isDemo = await this.isDemoMode();
+    const orderId = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+    const subtotal = payload.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const shippingCost = payload.shippingCost || 0;
+    const total = subtotal + shippingCost;
+
+    const mockOrder: Order = {
+      id: orderId,
+      customer_id: 'cust-demo-' + Date.now().toString().slice(-4),
+      status: 'pending',
+      shipping_name: payload.customerName,
+      shipping_phone: payload.customerPhone,
+      shipping_address: `${payload.shippingAddress}${payload.shippingCity ? `, ${payload.shippingCity}` : ''}`,
+      subtotal,
+      shipping_cost: shippingCost,
+      total,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      customers: {
+        id: 'cust-demo-' + Date.now().toString().slice(-4),
+        auth_user_id: null,
+        name: payload.customerName,
+        email: payload.customerEmail || `${payload.customerPhone.replace(/[^0-9]/g, '')}@customer.angelinc.id`,
+        phone: payload.customerPhone,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      order_items: payload.items.map((item, idx) => ({
+        id: `item-${orderId}-${idx + 1}`,
+        order_id: orderId,
+        product_id: item.productId || null,
+        product_name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+        subtotal: item.price * item.quantity,
+      })),
+    };
+
+    if (isDemo) {
+      MOCK_ORDERS.unshift(mockOrder);
+      return mockOrder;
+    }
+
+    try {
+      const supabase = await createClient();
+
+      // 1. Create or find customer
+      let customerId = mockOrder.customer_id;
+      const { data: existingCustomer } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('phone', payload.customerPhone)
+        .maybeSingle();
+
+      if (existingCustomer?.id) {
+        customerId = existingCustomer.id;
+      } else {
+        const { data: newCustomer } = await supabase
+          .from('customers')
+          .insert({
+            name: payload.customerName,
+            email: payload.customerEmail || `${payload.customerPhone.replace(/[^0-9]/g, '')}@customer.angelinc.id`,
+            phone: payload.customerPhone,
+          })
+          .select('id')
+          .single();
+
+        if (newCustomer?.id) {
+          customerId = newCustomer.id;
+        }
+      }
+
+      // 2. Insert order
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          id: orderId,
+          customer_id: customerId,
+          status: 'pending',
+          shipping_name: payload.customerName,
+          shipping_phone: payload.customerPhone,
+          shipping_address: `${payload.shippingAddress}${payload.shippingCity ? `, ${payload.shippingCity}` : ''}`,
+          subtotal,
+          shipping_cost: shippingCost,
+          total,
+        })
+        .select()
+        .single();
+
+      if (orderError || !orderData) {
+        MOCK_ORDERS.unshift(mockOrder);
+        return mockOrder;
+      }
+
+      // 3. Insert order items
+      if (payload.items.length > 0) {
+        const orderItemsPayload = payload.items.map((item) => ({
+          order_id: orderId,
+          product_id: item.productId || null,
+          product_name: item.name,
+          quantity: item.quantity,
+          unit_price: item.price,
+          subtotal: item.price * item.quantity,
+        }));
+
+        await supabase.from('order_items').insert(orderItemsPayload);
+      }
+
+      MOCK_ORDERS.unshift(mockOrder);
+      return mockOrder;
+    } catch {
+      MOCK_ORDERS.unshift(mockOrder);
+      return mockOrder;
+    }
+  }
+
   static async updateStatus(id: string, status: OrderStatus): Promise<Order> {
     const isDemo = await this.isDemoMode();
     if (isDemo) {

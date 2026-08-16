@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useToast } from '@/components/ui/toast';
-import { ArrowRight, Send, MessageCircle } from 'lucide-react';
+import { ArrowRight, Send } from 'lucide-react';
+import { InstagramIcon, TikTokIcon, WhatsAppIcon } from '@/components/ui/social-icons';
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState('');
@@ -63,32 +64,36 @@ export default function NewsletterSection() {
           </p>
         )}
 
-        {/* Social Links */}
-        <div className="pt-6 flex justify-center items-center gap-8 text-xs font-bold uppercase tracking-[0.16em] text-neutral-600 dark:text-neutral-400">
+        {/* Refined Luxury Social Icons */}
+        <div className="pt-8 flex flex-wrap justify-center items-center gap-3 sm:gap-4">
           <a
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-neutral-950 dark:hover:text-white transition"
+            className="group flex items-center gap-2 rounded-full border border-neutral-200/80 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 px-4 py-2 text-xs font-semibold tracking-wider text-neutral-700 dark:text-neutral-300 hover:border-black dark:hover:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 shadow-sm"
           >
-            Instagram
+            <InstagramIcon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-[11px] uppercase tracking-widest font-bold">Instagram</span>
           </a>
+
           <a
             href="https://tiktok.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-neutral-950 dark:hover:text-white transition"
+            className="group flex items-center gap-2 rounded-full border border-neutral-200/80 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 px-4 py-2 text-xs font-semibold tracking-wider text-neutral-700 dark:text-neutral-300 hover:border-black dark:hover:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 shadow-sm"
           >
-            TikTok
+            <TikTokIcon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-[11px] uppercase tracking-widest font-bold">TikTok</span>
           </a>
+
           <a
             href="https://wa.me/6281234567890"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 hover:text-neutral-950 dark:hover:text-white transition"
+            className="group flex items-center gap-2 rounded-full border border-neutral-200/80 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 px-4 py-2 text-xs font-semibold tracking-wider text-neutral-700 dark:text-neutral-300 hover:border-black dark:hover:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 shadow-sm"
           >
-            <MessageCircle className="h-3.5 w-3.5 text-emerald-500" />
-            <span>WhatsApp</span>
+            <WhatsAppIcon className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-[11px] uppercase tracking-widest font-bold">WhatsApp Care</span>
           </a>
         </div>
       </div>

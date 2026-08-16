@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { CustomerService } from '@/server/services/customer.service';
+import { ActivityLogService } from '@/server/services/activity-log.service';
 import { formatDate, formatDateTime, getOrderStatusBadge } from '@/lib/utils';
 import { Price } from '@/components/providers/currency-provider';
 import {
@@ -12,6 +13,8 @@ import {
   ShoppingBag,
   ArrowRight,
   CreditCard,
+  Clock,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface CustomerDetailPageProps {
@@ -29,6 +32,13 @@ export default async function CustomerDetailPage({
   }
 
   const { customer, orders } = result;
+
+  // Fetch activity logs for this customer
+  const activityLogs = await ActivityLogService.getLogs({
+    identifier: customer.phone || customer.email,
+    actor_type: 'member',
+    limit: 20,
+  });
 
   const totalOrders = orders.length;
   const completedOrders = orders.filter((o) => o.status === 'completed');
@@ -89,6 +99,7 @@ export default async function CustomerDetailPage({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
+        {/* Contact Info */}
         <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-subtle space-y-4 lg:col-span-1">
           <h2 className="text-sm font-semibold text-neutral-900 dark:text-white border-b border-neutral-100 dark:border-neutral-800 pb-3">
             Informasi Kontak
@@ -128,6 +139,7 @@ export default async function CustomerDetailPage({
           </div>
         </div>
 
+        {/* Order History */}
         <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] shadow-subtle lg:col-span-2 overflow-hidden">
           <div className="border-b border-neutral-100 dark:border-neutral-800 p-5">
             <h2 className="text-sm font-semibold text-neutral-900 dark:text-white">
@@ -196,6 +208,76 @@ export default async function CustomerDetailPage({
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      {/* Login & Logout Activity Audit Trail */}
+      <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] shadow-subtle overflow-hidden">
+        <div className="border-b border-neutral-100 dark:border-neutral-800 p-5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-neutral-400" />
+            <h2 className="text-sm font-semibold text-neutral-900 dark:text-white">
+              Histori Login & Logout Member
+            </h2>
+          </div>
+          <span className="text-[11px] text-neutral-400 font-mono">
+            {activityLogs.length} Catatan
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="border-b border-neutral-100 dark:border-neutral-800 bg-neutral-50/80 dark:bg-neutral-900/60 text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+              <tr>
+                <th className="py-3 px-4">Waktu</th>
+                <th className="py-3 px-4">Aktivitas</th>
+                <th className="py-3 px-4">Alamat IP</th>
+                <th className="py-3 px-4">Perangkat / Client</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
+              {activityLogs.length > 0 ? (
+                activityLogs.map((log, idx) => (
+                  <tr
+                    key={log.id || idx}
+                    className="transition hover:bg-neutral-50/70 dark:hover:bg-neutral-900/50"
+                  >
+                    <td className="py-3 px-4 font-mono text-neutral-600 dark:text-neutral-400">
+                      {log.created_at ? formatDateTime(log.created_at) : 'Baru saja'}
+                    </td>
+                    <td className="py-3 px-4 font-semibold">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                          log.event_type === 'LOGIN'
+                            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                            : log.event_type === 'LOGOUT'
+                            ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
+                            : 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                        }`}
+                      >
+                        {log.event_type}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 font-mono text-neutral-500">
+                      {log.ip_address || '127.0.0.1'}
+                    </td>
+                    <td className="py-3 px-4 text-neutral-500 truncate max-w-xs">
+                      {log.user_agent || 'Browser Web Client'}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="py-8 text-center text-xs text-neutral-400"
+                  >
+                    Belum ada histori sesi untuk member ini.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -199,7 +199,7 @@ export default function AdminLoginPage() {
 
         {/* Clean Footer */}
         <div className="mt-6 text-center text-[11px] text-neutral-400 dark:text-neutral-500">
-          ANGEL INC. &copy; 2026 &middot; Made in Paradise
+          ANGEL INC. &copy; 2026 &middot; Crafted by DummVinci &middot; Made in Paradise
         </div>
       </div>
     </main>

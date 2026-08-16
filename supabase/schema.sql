@@ -115,6 +115,23 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     subtotal NUMERIC(14,2) NOT NULL
 );
 
+-- Tabel: auth_activity_logs (Histori Login / Logout Member & Admin)
+CREATE TABLE IF NOT EXISTS public.auth_activity_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    actor_type TEXT NOT NULL, -- 'member' | 'admin'
+    identifier TEXT NOT NULL, -- phone / email / username
+    name TEXT,
+    event_type TEXT NOT NULL, -- 'LOGIN' | 'LOGOUT' | 'OTP_REQUEST'
+    ip_address TEXT,
+    user_agent TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_auth_logs_identifier ON public.auth_activity_logs(identifier);
+CREATE INDEX IF NOT EXISTS idx_auth_logs_event_type ON public.auth_activity_logs(event_type);
+CREATE INDEX IF NOT EXISTS idx_auth_logs_created_at ON public.auth_activity_logs(created_at DESC);
+
 -- ------------------------------------------------------------------------------
 -- 4. HELPER FUNCTIONS & TRIGGERS
 -- ------------------------------------------------------------------------------

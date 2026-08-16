@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import BrandLogo from '@/components/layout/brand-logo';
 import { Shield, Sparkles, Heart } from 'lucide-react';
+import { InstagramIcon, TikTokIcon, WhatsAppIcon } from '@/components/ui/social-icons';
 
 export default function StorefrontFooter() {
   return (
@@ -111,15 +112,16 @@ export default function StorefrontFooter() {
             <h4 className="text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-400">
               PORTAL & SOSIAL
             </h4>
-            <ul className="space-y-2 text-xs text-neutral-400 font-medium">
+            <ul className="space-y-2.5 text-xs text-neutral-400 font-medium">
               <li>
                 <a
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition"
+                  className="group flex items-center gap-2 hover:text-white transition"
                 >
-                  Instagram
+                  <InstagramIcon className="h-3.5 w-3.5 text-neutral-400 group-hover:text-white transition" />
+                  <span>Instagram</span>
                 </a>
               </li>
               <li>
@@ -127,9 +129,10 @@ export default function StorefrontFooter() {
                   href="https://tiktok.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition"
+                  className="group flex items-center gap-2 hover:text-white transition"
                 >
-                  TikTok
+                  <TikTokIcon className="h-3.5 w-3.5 text-neutral-400 group-hover:text-white transition" />
+                  <span>TikTok</span>
                 </a>
               </li>
               <li>
@@ -137,9 +140,10 @@ export default function StorefrontFooter() {
                   href="https://wa.me/6281234567890"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition"
+                  className="group flex items-center gap-2 hover:text-white transition"
                 >
-                  WhatsApp Care
+                  <WhatsAppIcon className="h-3.5 w-3.5 text-neutral-400 group-hover:text-white transition" />
+                  <span>WhatsApp Care</span>
                 </a>
               </li>
               <li className="pt-2">
@@ -156,13 +160,15 @@ export default function StorefrontFooter() {
           </div>
         </div>
 
-        {/* Bottom Copyright */}
+        {/* Bottom Copyright & Credit */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
-          <div>&copy; 2026 ANGEL INC. All Rights Reserved. Made in Paradise.</div>
+          <div>
+            &copy; 2026 ANGEL INC. All Rights Reserved. &bull; <span className="text-neutral-400">Crafted by DummVinci</span>
+          </div>
           <div className="flex items-center gap-1">
-            <span>Crafted with</span>
-            <Heart className="h-3 w-3 text-rose-500 fill-rose-500 inline" />
-            <span>for your everyday expression</span>
+            <span>Made with</span>
+            <Heart className="h-3 w-3 text-neutral-400 fill-neutral-400 inline" />
+            <span>in Paradise</span>
           </div>
         </div>
       </div>

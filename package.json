@@ -2,6 +2,10 @@
   "name": "angel-inc-admin",
   "version": "1.0.0",
   "private": true,
+  "author": "DummVinci",
+  "contributors": [
+    "DummVinci"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
