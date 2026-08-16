@@ -163,12 +163,10 @@ export default function StorefrontFooter() {
         {/* Bottom Copyright & Credit */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
           <div>
-            &copy; 2026 ANGEL INC. All Rights Reserved. &bull; <span className="text-neutral-400">Crafted by DummVinci</span>
+            &copy; 2026 ANGEL INC. All Rights Reserved. &bull; Haute Parfumerie & Atelier
           </div>
           <div className="flex items-center gap-1">
-            <span>Made with</span>
-            <Heart className="h-3 w-3 text-neutral-400 fill-neutral-400 inline" />
-            <span>in Paradise</span>
+            <span>Crafted with pure devotion in Paradise</span>
           </div>
         </div>
       </div>

@@ -30,6 +30,16 @@ import {
   Loader2,
   Crown,
   Share2,
+  Copy,
+  Check,
+  Printer,
+  Tag,
+  Plus,
+  Minus,
+  Trash2,
+  Clock,
+  ExternalLink,
+  ShieldAlert,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/social-icons';
 
@@ -39,18 +49,46 @@ interface ShippingOption {
   courier: string;
   etd: string;
   price: number;
+  description: string;
 }
 
 const SHIPPING_OPTIONS: ShippingOption[] = [
-  { id: 'reg', name: 'J&T Express (Reguler)', courier: 'J&T', etd: '2-3 Hari', price: 15000 },
-  { id: 'exp', name: 'SiCepat Best (Next Day)', courier: 'SiCepat', etd: '1 Hari', price: 25000 },
-  { id: 'ins', name: 'Instant Delivery (GoSend/Grab)', courier: 'Instant', etd: 'Hari Ini', price: 35000 },
+  {
+    id: 'reg',
+    name: 'J&T Express Atelier Dispatch',
+    courier: 'J&T Express',
+    etd: '2-3 Business Days',
+    price: 15000,
+    description: 'Standard insured courier across Indonesia',
+  },
+  {
+    id: 'exp',
+    name: 'SiCepat Best Priority Air',
+    courier: 'SiCepat Priority',
+    etd: 'Next Business Day',
+    price: 25000,
+    description: 'Expedited air freight with signature on delivery',
+  },
+  {
+    id: 'ins',
+    name: 'Instant White-Glove Courier',
+    courier: 'GoSend / Grab Instant',
+    etd: 'Same-Day (3-6 Hours)',
+    price: 35000,
+    description: 'Direct door-to-door courier within Greater Jakarta & Bali',
+  },
 ];
+
+const VALID_PROMOS: Record<string, { type: 'percent' | 'fixed'; value: number; label: string }> = {
+  ANGEL10: { type: 'percent', value: 10, label: '10% Atelier Welcome Privilege' },
+  VIPCOUTURE: { type: 'percent', value: 15, label: '15% Haute Guild Exclusive' },
+  PARADISE: { type: 'fixed', value: 50000, label: 'IDR 50.000 Atelier Credit' },
+};
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartTotal, clearCart } = useStorefront();
-  const { success, error } = useToast();
+  const { cart, cartTotal, updateQuantity, removeFromCart, clearCart } = useStorefront();
+  const { success, error, info } = useToast();
 
   const [member, setMember] = useState<MemberSession | null>(null);
   const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
@@ -66,6 +104,12 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<'qris' | 'bank_transfer' | 'cod' | 'whatsapp'>('qris');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Promo Code States
+  const [promoCodeInput, setPromoCodeInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; type: 'percent' | 'fixed'; value: number; label: string } | null>(null);
+  const [copiedAccount, setCopiedAccount] = useState(false);
+  const [copiedInvoice, setCopiedInvoice] = useState(false);
 
   // Order Placed Success State
   const [placedOrder, setPlacedOrder] = useState<any | null>(null);
@@ -88,29 +132,75 @@ export default function CheckoutPage() {
   const selectedShippingOption = SHIPPING_OPTIONS.find((s) => s.id === selectedShipping) || SHIPPING_OPTIONS[0];
   const isFreeShipping = cartTotal >= 300000;
   const shippingCost = isFreeShipping ? 0 : selectedShippingOption.price;
+
+  // Member 5% Privilege
   const memberDiscount = member ? Math.round((cartTotal * member.discountPercent) / 100) : 0;
-  const finalTotal = Math.max(0, cartTotal - memberDiscount + shippingCost);
+
+  // Voucher / Promo Discount
+  let promoDiscount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.type === 'percent') {
+      promoDiscount = Math.round(((cartTotal - memberDiscount) * appliedPromo.value) / 100);
+    } else {
+      promoDiscount = appliedPromo.value;
+    }
+  }
+
+  const finalTotal = Math.max(0, cartTotal - memberDiscount - promoDiscount + shippingCost);
+
+  const handleApplyPromo = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanCode = promoCodeInput.trim().toUpperCase();
+    if (!cleanCode) return;
+
+    if (VALID_PROMOS[cleanCode]) {
+      const p = VALID_PROMOS[cleanCode];
+      setAppliedPromo({ code: cleanCode, ...p });
+      setPromoCodeInput('');
+      success(`Privilege Code "${cleanCode}" applied: ${p.label}`, 'Code Applied');
+    } else {
+      error('Invalid or expired voucher code. Try "ANGEL10" or "PARADISE".', 'Invalid Code');
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    info('Voucher code removed.');
+  };
+
+  const copyToClipboard = (text: string, type: 'account' | 'invoice') => {
+    navigator.clipboard.writeText(text);
+    if (type === 'account') {
+      setCopiedAccount(true);
+      setTimeout(() => setCopiedAccount(false), 2500);
+      success('Bank Account number copied to clipboard.', 'Copied');
+    } else {
+      setCopiedInvoice(true);
+      setTimeout(() => setCopiedInvoice(false), 2500);
+      success('Order Reference ID copied to clipboard.', 'Copied');
+    }
+  };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (cart.length === 0) {
-      error('Keranjang belanja kosong.');
+      error('Your shopping bag is currently empty.');
       return;
     }
 
     if (!name.trim()) {
-      error('Silakan isi nama lengkap penerima.');
+      error('Please enter the recipient full name.');
       return;
     }
 
     if (!phone.trim()) {
-      error('Silakan isi nomor telepon/WhatsApp.');
+      error('Please enter a valid mobile / WhatsApp number.');
       return;
     }
 
     if (!address.trim()) {
-      error('Silakan isi alamat lengkap pengiriman.');
+      error('Please enter complete delivery street address.');
       return;
     }
 
@@ -121,12 +211,16 @@ export default function CheckoutPage() {
         customerName: name.trim(),
         customerPhone: phone.trim(),
         customerEmail: email.trim() || undefined,
-        shippingAddress: `${address.trim()}${postalCode ? ` (Kode Pos: ${postalCode.trim()})` : ''}`,
+        shippingAddress: `${address.trim()}${postalCode ? ` (Postal Code: ${postalCode.trim()})` : ''}`,
         shippingCity: city,
-        shippingCourier: selectedShippingOption.name,
+        shippingCourier: `${selectedShippingOption.courier} (${selectedShippingOption.etd})`,
         shippingCost,
         paymentMethod,
-        notes: notes.trim() || undefined,
+        notes: notes.trim()
+          ? `${notes.trim()}${appliedPromo ? ` [Promo: ${appliedPromo.code}]` : ''}`
+          : appliedPromo
+          ? `[Promo: ${appliedPromo.code}]`
+          : undefined,
         items: cart.map(({ product, quantity }) => ({
           productId: product.id,
           name: product.name,
@@ -138,15 +232,15 @@ export default function CheckoutPage() {
       const res = await createOrderAction(orderPayload);
 
       if (!res.success || !res.data) {
-        throw new Error(res.error || 'Gagal memproses pesanan.');
+        throw new Error(res.error || 'Failed to process checkout transaction.');
       }
 
       setPlacedOrder(res.data);
       clearCart();
-      success('Pesanan Anda berhasil dikonfirmasi!', 'Order Berhasil');
+      success('Your order has been officially confirmed & recorded!', 'Order Logged');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
-      error(err?.message || 'Terjadi kendala saat memproses pesanan.');
+      error(err?.message || 'A network error occurred while finalizing your order.');
     } finally {
       setIsSubmitting(false);
     }
@@ -158,63 +252,199 @@ export default function CheckoutPage() {
       ?.map((i: any) => `• ${i.product_name} (${i.quantity}x) - Rp ${i.subtotal.toLocaleString('id-ID')}`)
       .join('\n');
 
-    const msg = `Halo Angel Inc. ✨\n\nSaya telah membuat pesanan di website:\n*No. Invoice:* ${placedOrder.id}\n*Penerima:* ${placedOrder.shipping_name}\n*No. HP:* ${placedOrder.shipping_phone}\n*Alamat:* ${placedOrder.shipping_address}\n\n*Daftar Produk:*\n${itemsText}\n\n*Total Tagihan:* Rp ${placedOrder.total.toLocaleString('id-ID')}\n*Metode Bayar:* ${placedOrder.payment_method?.toUpperCase() || 'QRIS'}\n\nMohon konfirmasi dan proses pesanan saya. Terima kasih! 🕊️`;
+    const msg = `*ANGEL INC. ATELIER ORDER DISPATCH*\n\nDear Concierge,\nI have placed an order via the official boutique:\n\n*Invoice Reference:* ${placedOrder.id}\n*Client:* ${placedOrder.shipping_name}\n*Contact:* ${placedOrder.shipping_phone}\n*Delivery Address:* ${placedOrder.shipping_address}\n*City:* ${placedOrder.shipping_city || city}\n*Courier:* ${placedOrder.shipping_courier}\n\n*Archive Items:*\n${itemsText}\n\n*Subtotal:* Rp ${placedOrder.subtotal?.toLocaleString('id-ID')}\n*Shipping:* ${placedOrder.shipping_cost === 0 ? 'COMPLIMENTARY' : `Rp ${placedOrder.shipping_cost?.toLocaleString('id-ID')}`}\n*Total Balance:* Rp ${placedOrder.total?.toLocaleString('id-ID')}\n*Payment Method:* ${placedOrder.payment_method?.toUpperCase()}\n\nPlease verify and initiate white-glove packaging. Thank you! 🕊️`;
 
     return encodeURIComponent(msg);
   };
 
-  // If Order is placed successfully, render the Order Confirmation invoice
+  // =========================================================================
+  // VIEW: Order Placed Successfully (Invoice & Concierge Screen)
+  // =========================================================================
   if (placedOrder) {
     return (
-      <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-16 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
-        <div className="mx-auto max-w-2xl">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="mx-auto flex justify-center mb-4">
+      <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-12 sm:py-16 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
+        <div className="mx-auto max-w-3xl space-y-8">
+          {/* Top Brand & Status Header */}
+          <div className="text-center space-y-3">
+            <div className="mx-auto flex justify-center mb-2">
               <BrandLogo size="md" />
             </div>
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-4 shadow-sm">
+
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-200/60 dark:border-emerald-800">
               <CheckCircle2 className="h-8 w-8" />
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-semibold tracking-tight">
-              Pesanan Dikonfirmasi!
+
+            <h1 className="font-serif text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-white">
+              Order Confirmed & Logged
             </h1>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-              Terima kasih telah berbelanja di Angel Inc. Detail pesanan Anda telah tersimpan di sistem.
+            <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+              Your requisition has been recorded in the atelier repository. Review your digital invoice and payment instructions below.
             </p>
           </div>
 
-          {/* Invoice Card */}
-          <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-6">
-            <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-4">
+          {/* Interactive Invoice Card */}
+          <div className="rounded-3xl border border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-10 shadow-2xl space-y-8">
+            {/* Invoice Top Meta */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-100 dark:border-neutral-800">
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-400">
-                  Nomor Invoice
+                <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400">
+                  Official Requisition Reference
                 </span>
-                <div className="font-mono text-sm font-bold text-neutral-900 dark:text-white">
-                  {placedOrder.id}
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="font-mono text-base sm:text-lg font-bold text-neutral-900 dark:text-white">
+                    {placedOrder.id}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(placedOrder.id, 'invoice')}
+                    className="p-1 text-neutral-400 hover:text-black dark:hover:text-white transition"
+                    title="Copy Reference ID"
+                  >
+                    {copiedInvoice ? (
+                      <Check className="h-4 w-4 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
               </div>
-              <span className="rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-900/60 px-3 py-1 text-[10px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
-                Menunggu Pembayaran
-              </span>
+
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/60 px-3.5 py-1 text-[10px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-widest">
+                  Awaiting Settlement & Dispatch
+                </span>
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 px-3 py-1 text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition"
+                  title="Print Digital Invoice"
+                >
+                  <Printer className="h-3.5 w-3.5" />
+                  <span>Print</span>
+                </button>
+              </div>
             </div>
 
-            {/* Items Summary */}
+            {/* Payment Method Action Box */}
+            <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/80 dark:bg-neutral-900/60 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  {placedOrder.payment_method === 'qris' && <QrCode className="h-5 w-5 text-neutral-900 dark:text-white" />}
+                  {placedOrder.payment_method === 'bank_transfer' && <Building2 className="h-5 w-5 text-neutral-900 dark:text-white" />}
+                  {placedOrder.payment_method === 'cod' && <Banknote className="h-5 w-5 text-neutral-900 dark:text-white" />}
+                  {placedOrder.payment_method === 'whatsapp' && <WhatsAppIcon className="h-5 w-5" />}
+                  <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
+                    Payment Method: {placedOrder.payment_method?.replace('_', ' ').toUpperCase()}
+                  </span>
+                </div>
+                <span className="text-xs font-serif font-bold text-neutral-900 dark:text-white">
+                  Total: <Price amount={placedOrder.total} />
+                </span>
+              </div>
+
+              {/* QRIS Instructions */}
+              {placedOrder.payment_method === 'qris' && (
+                <div className="space-y-4 pt-2">
+                  <div className="bg-white dark:bg-black p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-center gap-6 justify-center">
+                    <div className="relative p-2 bg-white rounded-lg border shadow-sm">
+                      {/* Stylized QR representation */}
+                      <div className="h-36 w-36 bg-neutral-950 flex flex-col items-center justify-center p-2 rounded relative overflow-hidden">
+                        <div className="absolute inset-2 border-4 border-white/20 grid grid-cols-4 gap-1 p-1">
+                          <div className="bg-white rounded-sm" />
+                          <div className="bg-white/40 rounded-sm" />
+                          <div className="bg-white rounded-sm" />
+                          <div className="bg-white/80 rounded-sm" />
+                          <div className="bg-white/60 rounded-sm" />
+                          <div className="bg-white rounded-sm" />
+                          <div className="bg-white/30 rounded-sm" />
+                          <div className="bg-white rounded-sm" />
+                          <div className="bg-white rounded-sm" />
+                          <div className="bg-white/20 rounded-sm" />
+                          <div className="bg-white rounded-sm" />
+                          <div className="bg-white/70 rounded-sm" />
+                        </div>
+                        <div className="z-10 bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded shadow">
+                          QRIS INSTANT
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-xs space-y-1.5 text-neutral-600 dark:text-neutral-400">
+                      <p className="font-bold text-neutral-900 dark:text-white">How to settle via QRIS:</p>
+                      <p>1. Open your Mobile Banking (BCA, Mandiri) or E-Wallet (GoPay, OVO, ShopeePay).</p>
+                      <p>2. Scan QR or transfer exact amount: <strong>Rp {placedOrder.total?.toLocaleString('id-ID')}</strong></p>
+                      <p>3. Confirm with WhatsApp Concierge below for accelerated dispatch.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Bank Transfer Instructions */}
+              {placedOrder.payment_method === 'bank_transfer' && (
+                <div className="space-y-3 pt-2">
+                  <div className="bg-white dark:bg-black p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-[10px] text-neutral-400 uppercase font-bold tracking-wider">
+                          Bank Central Asia (BCA) Atelier Account
+                        </div>
+                        <div className="font-mono text-sm font-bold text-neutral-900 dark:text-white">
+                          8730 1928 3344
+                        </div>
+                        <div className="text-[11px] text-neutral-500">
+                          Account Name: <strong>PT ANGEL INCORPORATED</strong>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard('873019283344', 'account')}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-xs font-bold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                      >
+                        {copiedAccount ? (
+                          <>
+                            <Check className="h-3.5 w-3.5 text-emerald-500" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-3.5 w-3.5" />
+                            <span>Copy Account</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+                    Kindly complete the transfer within 24 hours to secure reserved piece allocation.
+                  </p>
+                </div>
+              )}
+
+              {/* COD Instructions */}
+              {placedOrder.payment_method === 'cod' && (
+                <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" />
+                  <span>Cash on Delivery active. Please prepare exact tender upon courier delivery.</span>
+                </div>
+              )}
+            </div>
+
+            {/* Product Items Breakdown */}
             <div className="space-y-3">
-              <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-400">
-                Rincian Produk
+              <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400">
+                Archived Items in Requisition
               </span>
-              <div className="divide-y divide-neutral-100 dark:divide-neutral-800/60">
+              <div className="divide-y divide-neutral-100 dark:divide-neutral-800/80">
                 {placedOrder.order_items?.map((item: any) => (
-                  <div key={item.id} className="py-2.5 flex items-center justify-between text-xs">
+                  <div key={item.id} className="py-3 flex items-center justify-between text-xs">
                     <div>
                       <span className="font-semibold text-neutral-900 dark:text-white">
                         {item.product_name}
                       </span>
                       <span className="text-neutral-400 ml-2">x{item.quantity}</span>
                     </div>
-                    <span className="font-bold text-neutral-800 dark:text-neutral-200">
+                    <span className="font-bold text-neutral-900 dark:text-white">
                       <Price amount={item.subtotal} />
                     </span>
                   </div>
@@ -222,48 +452,50 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Price Breakdown */}
-            <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-4 space-y-2 text-xs border border-neutral-200/60 dark:border-neutral-800">
+            {/* Financial Breakdown Table */}
+            <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-5 space-y-2.5 text-xs border border-neutral-200/60 dark:border-neutral-800">
               <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                <span>Subtotal Produk</span>
+                <span>Product Subtotal</span>
                 <Price amount={placedOrder.subtotal} />
               </div>
               <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                <span>Biaya Pengiriman</span>
+                <span>Courier Service ({placedOrder.shipping_courier})</span>
                 {placedOrder.shipping_cost === 0 ? (
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">GRATIS</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">COMPLIMENTARY</span>
                 ) : (
                   <Price amount={placedOrder.shipping_cost} />
                 )}
               </div>
-              <div className="flex justify-between text-sm font-bold text-neutral-900 dark:text-white pt-2 border-t border-neutral-200 dark:border-neutral-800">
-                <span>Total Pembayaran</span>
+              <div className="flex justify-between text-base font-bold text-neutral-900 dark:text-white pt-2.5 border-t border-neutral-200 dark:border-neutral-800">
+                <span>Total Amount</span>
                 <Price amount={placedOrder.total} />
               </div>
             </div>
 
-            {/* Delivery Info */}
-            <div className="text-xs space-y-1 text-neutral-600 dark:text-neutral-400">
-              <div className="font-bold text-neutral-900 dark:text-white">Penerima & Alamat:</div>
-              <div>{placedOrder.shipping_name} ({placedOrder.shipping_phone})</div>
+            {/* Recipient & Shipping Destination */}
+            <div className="text-xs space-y-1 text-neutral-600 dark:text-neutral-400 bg-neutral-50/50 dark:bg-neutral-900/40 p-4 rounded-xl border border-neutral-200/60 dark:border-neutral-800">
+              <div className="font-bold text-neutral-900 dark:text-white mb-1">
+                Recipient & Delivery Destination:
+              </div>
+              <div>{placedOrder.shipping_name} &bull; {placedOrder.shipping_phone}</div>
               <div>{placedOrder.shipping_address}</div>
             </div>
 
-              {/* Action CTAs */}
+            {/* Action CTAs */}
             <div className="space-y-3 pt-2">
               <a
                 href={`https://wa.me/6281234567890?text=${generateWhatsAppMessage()}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 shadow-md"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-4 text-xs font-bold uppercase tracking-[0.14em] transition hover:opacity-90 shadow-md"
               >
                 <WhatsAppIcon className="h-4 w-4" />
-                <span>Send & Confirm via WhatsApp Concierge</span>
+                <span>Notify & Confirm with WhatsApp Concierge</span>
               </a>
 
               <Link
                 href="/"
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 dark:border-neutral-800 py-3 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-200 dark:border-neutral-800 py-3.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
               >
                 <span>Return to Atelier Catalog</span>
               </Link>
@@ -274,7 +506,9 @@ export default function CheckoutPage() {
     );
   }
 
-  // If Cart is Empty
+  // =========================================================================
+  // VIEW: Empty Cart State
+  // =========================================================================
   if (cart.length === 0) {
     return (
       <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] flex items-center justify-center p-6 text-neutral-900 dark:text-white">
@@ -298,11 +532,14 @@ export default function CheckoutPage() {
     );
   }
 
+  // =========================================================================
+  // VIEW: Main Luxury Checkout Form
+  // =========================================================================
   return (
-    <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-12 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
+    <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-10 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
       <div className="mx-auto max-w-7xl">
         {/* Top Header */}
-        <div className="flex items-center justify-between pb-8 mb-8 border-b border-neutral-200/80 dark:border-neutral-800">
+        <div className="flex items-center justify-between pb-6 mb-8 border-b border-neutral-200/80 dark:border-neutral-800">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-xs font-semibold text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white transition group"
@@ -323,6 +560,30 @@ export default function CheckoutPage() {
           </button>
         </div>
 
+        {/* Multi-Step Progress Tracker */}
+        <div className="max-w-2xl mx-auto mb-10">
+          <div className="grid grid-cols-3 text-center text-xs">
+            <div className="space-y-1.5">
+              <div className="h-1 bg-emerald-500 rounded-full" />
+              <span className="font-bold text-neutral-900 dark:text-white text-[11px] tracking-wider uppercase">
+                01 Shopping Bag
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              <div className="h-1 bg-black dark:bg-white rounded-full" />
+              <span className="font-bold text-neutral-900 dark:text-white text-[11px] tracking-wider uppercase">
+                02 Destination & Courier
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              <div className="h-1 bg-neutral-200 dark:bg-neutral-800 rounded-full" />
+              <span className="font-medium text-neutral-400 text-[11px] tracking-wider uppercase">
+                03 Settlement & Receipt
+              </span>
+            </div>
+          </div>
+        </div>
+
         <form onSubmit={handlePlaceOrder} className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Form Details */}
           <div className="lg:col-span-7 space-y-8">
@@ -335,10 +596,10 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                      Have a Member Account?
+                      Atelier Guild Member?
                     </h4>
                     <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                      Sign in seamlessly with phone OTP to apply 5% atelier privilege and auto-fill address.
+                      Sign in seamlessly with phone OTP to apply 5% privilege and auto-populate delivery address.
                     </p>
                   </div>
                 </div>
@@ -356,7 +617,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                   <span>
-                    Authenticated as <strong>{member.name}</strong> ({member.memberTier}) &bull; 5% atelier privilege active.
+                    Authenticated as <strong>{member.name}</strong> ({member.memberTier}) &bull; 5% atelier privilege applied.
                   </span>
                 </div>
                 <button
@@ -395,7 +656,7 @@ export default function CheckoutPage() {
 
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                    WhatsApp / Phone Number *
+                    WhatsApp / Mobile Number *
                   </label>
                   <input
                     type="tel"
@@ -410,7 +671,7 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Email (Optional for Digital Receipt)
+                  Email Address (Optional for Digital Receipt)
                 </label>
                 <input
                   type="email"
@@ -433,7 +694,7 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Street Address (Building, Street, District) *
+                  Street Address (Building, Street, District, Residence) *
                 </label>
                 <textarea
                   required
@@ -448,7 +709,7 @@ export default function CheckoutPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                    City / Region
+                    City / Province
                   </label>
                   <select
                     value={city}
@@ -488,13 +749,13 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Delivery Notes (Optional)
+                  Delivery Notes & Instructions (Optional)
                 </label>
                 <input
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Leave with concierge desk upon delivery"
+                  placeholder="e.g. Leave with building concierge or reception"
                   className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                 />
               </div>
@@ -506,7 +767,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4 text-neutral-400" />
                   <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                    3. Courier Service
+                    3. Courier & Dispatch Service
                   </h3>
                 </div>
                 {isFreeShipping && (
@@ -547,8 +808,8 @@ export default function CheckoutPage() {
                             {opt.etd}
                           </span>
                         </div>
-                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                          {opt.name}
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-tight">
+                          {opt.description}
                         </p>
                       </div>
 
@@ -575,6 +836,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="grid sm:grid-cols-2 gap-3">
+                {/* QRIS */}
                 <label
                   className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
                     paymentMethod === 'qris'
@@ -603,6 +865,7 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
+                {/* Bank Transfer */}
                 <label
                   className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
                     paymentMethod === 'bank_transfer'
@@ -631,6 +894,7 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
+                {/* COD */}
                 <label
                   className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
                     paymentMethod === 'cod'
@@ -654,11 +918,12 @@ export default function CheckoutPage() {
                       COD (Cash on Delivery)
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      Pay cash upon delivery
+                      Pay upon delivery to courier
                     </div>
                   </div>
                 </label>
 
+                {/* WhatsApp Concierge */}
                 <label
                   className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
                     paymentMethod === 'whatsapp'
@@ -682,15 +947,39 @@ export default function CheckoutPage() {
                       WhatsApp Concierge
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      Direct customer assistance
+                      Direct VIP patron assistance
                     </div>
                   </div>
                 </label>
               </div>
+
+              {/* Dynamic Guidance Detail based on selected payment */}
+              <div className="mt-4 p-4 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900/40 text-xs space-y-1.5">
+                {paymentMethod === 'qris' && (
+                  <div className="text-neutral-600 dark:text-neutral-400">
+                    <strong className="text-neutral-900 dark:text-white">QRIS Settlement:</strong> An instant QR code will be generated upon confirming your order. Compatible with all Indonesian mobile banking & e-wallets.
+                  </div>
+                )}
+                {paymentMethod === 'bank_transfer' && (
+                  <div className="text-neutral-600 dark:text-neutral-400">
+                    <strong className="text-neutral-900 dark:text-white">Direct Bank Settlement:</strong> Official BCA Account (<span className="font-mono text-neutral-900 dark:text-white">8730 1928 3344 a/n PT ANGEL INC</span>) will be displayed on your invoice.
+                  </div>
+                )}
+                {paymentMethod === 'cod' && (
+                  <div className="text-neutral-600 dark:text-neutral-400">
+                    <strong className="text-neutral-900 dark:text-white">Cash on Delivery:</strong> Inspected & sealed dispatch. Settle in cash directly with the courier upon arrival.
+                  </div>
+                )}
+                {paymentMethod === 'whatsapp' && (
+                  <div className="text-neutral-600 dark:text-neutral-400">
+                    <strong className="text-neutral-900 dark:text-white">VIP Concierge Service:</strong> Instant direct coordination with our private client concierge team.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Sticky Order Summary */}
+          {/* Right Column: Sticky Order Summary & Voucher */}
           <div className="lg:col-span-5 lg:sticky lg:top-8 space-y-6">
             <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-6">
               <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-4">
@@ -702,7 +991,7 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
-              {/* Items List */}
+              {/* Items List with Direct Quantity Adjuster */}
               <div className="space-y-4 max-h-72 overflow-y-auto pr-1 divide-y divide-neutral-100 dark:divide-neutral-800/60">
                 {cart.map(({ product, quantity }) => (
                   <div key={product.id} className="pt-3 first:pt-0 flex items-center gap-3">
@@ -717,19 +1006,91 @@ export default function CheckoutPage() {
                         <Sparkles className="h-5 w-5 text-amber-500 m-auto" />
                       )}
                     </div>
+
                     <div className="flex-1 min-w-0">
                       <h4 className="text-xs font-semibold text-neutral-900 dark:text-white truncate">
                         {product.name}
                       </h4>
                       <p className="text-[11px] text-neutral-400">
-                        {quantity} x <Price amount={product.discountPrice ?? product.price} />
+                        <Price amount={product.discountPrice ?? product.price} />
                       </p>
+
+                      {/* Micro Stepper */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="inline-flex items-center border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden bg-neutral-50 dark:bg-neutral-900">
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(product.id, quantity - 1)}
+                            className="px-2 py-0.5 text-neutral-500 hover:text-black dark:hover:text-white transition"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </button>
+                          <span className="px-2 text-[10px] font-bold">{quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(product.id, quantity + 1)}
+                            className="px-2 py-0.5 text-neutral-500 hover:text-black dark:hover:text-white transition"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(product.id)}
+                          className="text-neutral-400 hover:text-rose-500 transition p-0.5"
+                          title="Remove item"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
                     </div>
+
                     <span className="text-xs font-bold text-neutral-900 dark:text-white">
                       <Price amount={(product.discountPrice ?? product.price) * quantity} />
                     </span>
                   </div>
                 ))}
+              </div>
+
+              {/* Promo Code Input Form */}
+              <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                {!appliedPromo ? (
+                  <form onSubmit={handleApplyPromo} className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
+                      <input
+                        type="text"
+                        value={promoCodeInput}
+                        onChange={(e) => setPromoCodeInput(e.target.value)}
+                        placeholder="Privilege Code (e.g. ANGEL10)"
+                        className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2 pl-9 pr-3 text-xs uppercase text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 transition"
+                    >
+                      Apply
+                    </button>
+                  </form>
+                ) : (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-xs">
+                    <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
+                      <Tag className="h-3.5 w-3.5" />
+                      <span>
+                        <strong>{appliedPromo.code}</strong>: {appliedPromo.label}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemovePromo}
+                      className="text-[11px] font-bold text-rose-600 dark:text-rose-400 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Price Calculation Table */}
@@ -743,6 +1104,13 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
                     <span>Member Privilege (5%)</span>
                     <span>-<Price amount={memberDiscount} /></span>
+                  </div>
+                )}
+
+                {promoDiscount > 0 && (
+                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span>Privilege Voucher ({appliedPromo?.code})</span>
+                    <span>-<Price amount={promoDiscount} /></span>
                   </div>
                 )}
 
@@ -782,7 +1150,7 @@ export default function CheckoutPage() {
 
               <div className="flex items-center justify-center gap-2 text-[10px] text-neutral-400 text-center">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                <span>256-Bit Encrypted Secure Checkout</span>
+                <span>256-Bit Encrypted Secure Checkout & Guarantee</span>
               </div>
             </div>
           </div>

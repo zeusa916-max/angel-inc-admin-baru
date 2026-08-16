@@ -353,9 +353,9 @@ export default function SettingsPage() {
             </div>
           </div>
           <div>
-            <div className="text-neutral-400">Lead Developer:</div>
+            <div className="text-neutral-400">Arsitektur Sistem:</div>
             <div className="font-semibold text-neutral-100 mt-0.5">
-              DummVinci
+              Angel Inc. Core Engineering
             </div>
           </div>
         </div>
