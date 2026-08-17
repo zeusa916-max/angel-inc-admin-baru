@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import BrandLogo from '@/components/layout/brand-logo';
 import HeaderControls from '@/components/layout/header-controls';
+import DatabaseStatusBadge from '@/components/admin/database-status-badge';
 import { logoutAction } from '@/server/actions/auth.actions';
 import { useToast } from '@/components/ui/toast';
 import { useSplash } from '@/components/ui/splash-loader';
@@ -83,10 +84,15 @@ export default function Nav({
           <BrandLogo size="md" dark={theme === 'dark'} />
         </div>
 
-        {/* Quick Theme & Currency Controls */}
-        <div className="mt-4 flex items-center justify-between px-1 py-2 border-b border-neutral-100 dark:border-neutral-800/80">
-          <span className="text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
-            Pengaturan
+        {/* Live Database Sync Indicator */}
+        <div className="mt-4">
+          <DatabaseStatusBadge showLabel={true} className="w-full justify-between py-2 px-3 rounded-2xl" />
+        </div>
+
+        {/* Quick Currency & Theme Preferences */}
+        <div className="mt-3 flex items-center justify-between px-1 pb-3 border-b border-neutral-100 dark:border-neutral-800/80">
+          <span className="text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+            Preferensi
           </span>
           <HeaderControls />
         </div>

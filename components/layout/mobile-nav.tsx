@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import BrandLogo from '@/components/layout/brand-logo';
 import HeaderControls from '@/components/layout/header-controls';
+import DatabaseStatusBadge from '@/components/admin/database-status-badge';
 import { logoutAction } from '@/server/actions/auth.actions';
 import { useToast } from '@/components/ui/toast';
 import { useSplash } from '@/components/ui/splash-loader';
@@ -86,13 +87,14 @@ export default function MobileNav({
       <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-[#121316]/90 px-4 backdrop-blur-md md:hidden transition-colors duration-200">
         <BrandLogo size="sm" dark={theme === 'dark'} />
         <div className="flex items-center gap-2">
+          <DatabaseStatusBadge showLabel={false} />
           <HeaderControls />
           <button
             onClick={() => setIsOpen(true)}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+            className="flex h-8 w-8 items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
             aria-label="Buka Menu"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4" />
           </button>
         </div>
       </header>
@@ -118,7 +120,12 @@ export default function MobileNav({
                 </button>
               </div>
 
-              <nav className="mt-6 space-y-1.5">
+              {/* Live Database Sync Indicator in Mobile Drawer */}
+              <div className="mt-4">
+                <DatabaseStatusBadge showLabel={true} className="w-full justify-between py-2 px-3 rounded-2xl" />
+              </div>
+
+              <nav className="mt-4 space-y-1.5">
                 {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
                   const isActive =
                     pathname === href ||
