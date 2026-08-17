@@ -6,6 +6,7 @@ import { ToastProvider } from '@/components/ui/toast';
 import { SplashProvider } from '@/components/ui/splash-loader';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { CurrencyProvider } from '@/components/providers/currency-provider';
+import { StorefrontProvider } from '@/components/storefront/storefront-context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -85,9 +86,11 @@ export default function RootLayout({
         <ThemeProvider>
           <CurrencyProvider>
             <ToastProvider>
-              <Suspense fallback={null}>
-                <SplashProvider>{children}</SplashProvider>
-              </Suspense>
+              <StorefrontProvider>
+                <Suspense fallback={null}>
+                  <SplashProvider>{children}</SplashProvider>
+                </Suspense>
+              </StorefrontProvider>
             </ToastProvider>
           </CurrencyProvider>
         </ThemeProvider>

@@ -18,7 +18,6 @@ import {
   CreditCard,
   QrCode,
   Building2,
-  Banknote,
   CheckCircle2,
   Sparkles,
   ShoppingBag,
@@ -26,10 +25,8 @@ import {
   Phone,
   Mail,
   MapPin,
-  FileText,
   Loader2,
   Crown,
-  Share2,
   Copy,
   Check,
   Printer,
@@ -37,9 +34,6 @@ import {
   Plus,
   Minus,
   Trash2,
-  Clock,
-  ExternalLink,
-  ShieldAlert,
 } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/ui/social-icons';
 
@@ -49,7 +43,6 @@ interface ShippingOption {
   courier: string;
   etd: string;
   price: number;
-  description: string;
 }
 
 const SHIPPING_OPTIONS: ShippingOption[] = [
@@ -57,25 +50,22 @@ const SHIPPING_OPTIONS: ShippingOption[] = [
     id: 'reg',
     name: 'J&T Express Atelier Dispatch',
     courier: 'J&T Express',
-    etd: '2-3 Business Days',
+    etd: '2-3 Days',
     price: 15000,
-    description: 'Standard insured courier across Indonesia',
   },
   {
     id: 'exp',
     name: 'SiCepat Best Priority Air',
     courier: 'SiCepat Priority',
-    etd: 'Next Business Day',
+    etd: '1 Day',
     price: 25000,
-    description: 'Expedited air freight with signature on delivery',
   },
   {
     id: 'ins',
     name: 'Instant White-Glove Courier',
     courier: 'GoSend / Grab Instant',
-    etd: 'Same-Day (3-6 Hours)',
+    etd: 'Same Day',
     price: 35000,
-    description: 'Direct door-to-door courier within Greater Jakarta & Bali',
   },
 ];
 
@@ -87,7 +77,7 @@ const VALID_PROMOS: Record<string, { type: 'percent' | 'fixed'; value: number; l
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, cartTotal, updateQuantity, removeFromCart, clearCart } = useStorefront();
+  const { isLoaded, cart, cartTotal, updateQuantity, removeFromCart, clearCart } = useStorefront();
   const { success, error, info } = useToast();
 
   const [member, setMember] = useState<MemberSession | null>(null);
@@ -101,7 +91,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState('Jakarta Selatan');
   const [postalCode, setPostalCode] = useState('');
   const [selectedShipping, setSelectedShipping] = useState<string>('reg');
-  const [paymentMethod, setPaymentMethod] = useState<'qris' | 'bank_transfer' | 'cod' | 'whatsapp'>('qris');
+  const [paymentMethod, setPaymentMethod] = useState<'qris' | 'bank_transfer' | 'whatsapp'>('qris');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -159,7 +149,7 @@ export default function CheckoutPage() {
       setPromoCodeInput('');
       success(`Privilege Code "${cleanCode}" applied: ${p.label}`, 'Code Applied');
     } else {
-      error('Invalid or expired voucher code. Try "ANGEL10" or "PARADISE".', 'Invalid Code');
+      error('Invalid voucher code. Try "ANGEL10" or "PARADISE".', 'Invalid Code');
     }
   };
 
@@ -173,11 +163,11 @@ export default function CheckoutPage() {
     if (type === 'account') {
       setCopiedAccount(true);
       setTimeout(() => setCopiedAccount(false), 2500);
-      success('Bank Account number copied to clipboard.', 'Copied');
+      success('Bank Account number copied.', 'Copied');
     } else {
       setCopiedInvoice(true);
       setTimeout(() => setCopiedInvoice(false), 2500);
-      success('Order Reference ID copied to clipboard.', 'Copied');
+      success('Order Reference ID copied.', 'Copied');
     }
   };
 
@@ -185,7 +175,7 @@ export default function CheckoutPage() {
     e.preventDefault();
 
     if (cart.length === 0) {
-      error('Your shopping bag is currently empty.');
+      error('Your shopping bag is empty.');
       return;
     }
 
@@ -195,12 +185,12 @@ export default function CheckoutPage() {
     }
 
     if (!phone.trim()) {
-      error('Please enter a valid mobile / WhatsApp number.');
+      error('Please enter a valid WhatsApp / mobile number.');
       return;
     }
 
     if (!address.trim()) {
-      error('Please enter complete delivery street address.');
+      error('Please enter the complete street address.');
       return;
     }
 
@@ -237,7 +227,7 @@ export default function CheckoutPage() {
 
       setPlacedOrder(res.data);
       clearCart();
-      success('Your order has been officially confirmed & recorded!', 'Order Logged');
+      success('Order confirmed and recorded.', 'Order Placed');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err: any) {
       error(err?.message || 'A network error occurred while finalizing your order.');
@@ -252,46 +242,62 @@ export default function CheckoutPage() {
       ?.map((i: any) => `• ${i.product_name} (${i.quantity}x) - Rp ${i.subtotal.toLocaleString('id-ID')}`)
       .join('\n');
 
-    const msg = `*ANGEL INC. ATELIER ORDER DISPATCH*\n\nDear Concierge,\nI have placed an order via the official boutique:\n\n*Invoice Reference:* ${placedOrder.id}\n*Client:* ${placedOrder.shipping_name}\n*Contact:* ${placedOrder.shipping_phone}\n*Delivery Address:* ${placedOrder.shipping_address}\n*City:* ${placedOrder.shipping_city || city}\n*Courier:* ${placedOrder.shipping_courier}\n\n*Archive Items:*\n${itemsText}\n\n*Subtotal:* Rp ${placedOrder.subtotal?.toLocaleString('id-ID')}\n*Shipping:* ${placedOrder.shipping_cost === 0 ? 'COMPLIMENTARY' : `Rp ${placedOrder.shipping_cost?.toLocaleString('id-ID')}`}\n*Total Balance:* Rp ${placedOrder.total?.toLocaleString('id-ID')}\n*Payment Method:* ${placedOrder.payment_method?.toUpperCase()}\n\nPlease verify and initiate white-glove packaging. Thank you! 🕊️`;
+    const msg = `*ANGEL INC. ATELIER ORDER DISPATCH*\n\nDear Concierge,\nI have placed an order via the official boutique:\n\n*Invoice Reference:* ${placedOrder.id}\n*Client:* ${placedOrder.shipping_name}\n*Contact:* ${placedOrder.shipping_phone}\n*Delivery Address:* ${placedOrder.shipping_address}\n*City:* ${placedOrder.shipping_city || city}\n*Courier:* ${placedOrder.shipping_courier}\n\n*Archive Items:*\n${itemsText}\n\n*Subtotal:* Rp ${placedOrder.subtotal?.toLocaleString('id-ID')}\n*Shipping:* ${placedOrder.shipping_cost === 0 ? 'COMPLIMENTARY' : `Rp ${placedOrder.shipping_cost?.toLocaleString('id-ID')}`}\n*Total Balance:* Rp ${placedOrder.total?.toLocaleString('id-ID')}\n*Payment Method:* ${placedOrder.payment_method?.toUpperCase()}\n\nPlease verify and initiate dispatch. Thank you! 🕊️`;
 
     return encodeURIComponent(msg);
   };
+
+  // =========================================================================
+  // VIEW: Hydration Loading State
+  // =========================================================================
+  if (!isLoaded) {
+    return (
+      <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] flex items-center justify-center p-6 text-neutral-900 dark:text-white">
+        <div className="text-center space-y-3 max-w-sm">
+          <Loader2 className="h-7 w-7 animate-spin mx-auto text-neutral-900 dark:text-white" />
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-neutral-400">
+            Accessing Atelier Bag & Checkout…
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   // =========================================================================
   // VIEW: Order Placed Successfully (Invoice & Concierge Screen)
   // =========================================================================
   if (placedOrder) {
     return (
-      <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-12 sm:py-16 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
-        <div className="mx-auto max-w-3xl space-y-8">
-          {/* Top Brand & Status Header */}
-          <div className="text-center space-y-3">
-            <div className="mx-auto flex justify-center mb-2">
+      <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-12 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
+        <div className="mx-auto max-w-2xl space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="mx-auto flex justify-center mb-3">
               <BrandLogo size="md" />
             </div>
 
-            <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-200/60 dark:border-emerald-800">
-              <CheckCircle2 className="h-8 w-8" />
+            <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 shadow-sm border border-emerald-200/60 dark:border-emerald-800">
+              <CheckCircle2 className="h-7 w-7" />
             </div>
 
-            <h1 className="font-serif text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900 dark:text-white">
-              Order Confirmed & Logged
+            <h1 className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">
+              Order Confirmed
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
-              Your requisition has been recorded in the atelier repository. Review your digital invoice and payment instructions below.
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+              Your requisition has been recorded. Review payment details below or notify concierge for rapid dispatch.
             </p>
           </div>
 
-          {/* Interactive Invoice Card */}
-          <div className="rounded-3xl border border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-10 shadow-2xl space-y-8">
-            {/* Invoice Top Meta */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-100 dark:border-neutral-800">
+          {/* Invoice Card */}
+          <div className="rounded-3xl border border-neutral-200/90 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-xl space-y-6">
+            {/* Meta */}
+            <div className="flex items-center justify-between pb-4 border-b border-neutral-100 dark:border-neutral-800">
               <div>
                 <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400">
-                  Official Requisition Reference
+                  Invoice Reference
                 </span>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="font-mono text-base sm:text-lg font-bold text-neutral-900 dark:text-white">
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="font-mono text-sm font-bold text-neutral-900 dark:text-white">
                     {placedOrder.id}
                   </span>
                   <button
@@ -301,143 +307,90 @@ export default function CheckoutPage() {
                     title="Copy Reference ID"
                   >
                     {copiedInvoice ? (
-                      <Check className="h-4 w-4 text-emerald-500" />
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
                     ) : (
-                      <Copy className="h-4 w-4" />
+                      <Copy className="h-3.5 w-3.5" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/60 px-3.5 py-1 text-[10px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-widest">
-                  Awaiting Settlement & Dispatch
-                </span>
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-neutral-200 dark:border-neutral-800 px-3 py-1 text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition"
-                  title="Print Digital Invoice"
-                >
-                  <Printer className="h-3.5 w-3.5" />
-                  <span>Print</span>
-                </button>
-              </div>
+              <span className="rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/60 px-3 py-1 text-[10px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
+                Awaiting Settlement
+              </span>
             </div>
 
-            {/* Payment Method Action Box */}
-            <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/80 dark:bg-neutral-900/60 p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  {placedOrder.payment_method === 'qris' && <QrCode className="h-5 w-5 text-neutral-900 dark:text-white" />}
-                  {placedOrder.payment_method === 'bank_transfer' && <Building2 className="h-5 w-5 text-neutral-900 dark:text-white" />}
-                  {placedOrder.payment_method === 'cod' && <Banknote className="h-5 w-5 text-neutral-900 dark:text-white" />}
-                  {placedOrder.payment_method === 'whatsapp' && <WhatsAppIcon className="h-5 w-5" />}
-                  <span className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                    Payment Method: {placedOrder.payment_method?.replace('_', ' ').toUpperCase()}
-                  </span>
-                </div>
-                <span className="text-xs font-serif font-bold text-neutral-900 dark:text-white">
+            {/* Payment Settlement Box */}
+            <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/80 dark:bg-neutral-900/60 p-5 space-y-3">
+              <div className="flex items-center justify-between text-xs font-bold text-neutral-900 dark:text-white">
+                <span className="uppercase tracking-wider">
+                  Payment: {placedOrder.payment_method?.replace('_', ' ').toUpperCase()}
+                </span>
+                <span className="font-serif text-sm">
                   Total: <Price amount={placedOrder.total} />
                 </span>
               </div>
 
-              {/* QRIS Instructions */}
+              {/* QRIS */}
               {placedOrder.payment_method === 'qris' && (
-                <div className="space-y-4 pt-2">
-                  <div className="bg-white dark:bg-black p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-center gap-6 justify-center">
-                    <div className="relative p-2 bg-white rounded-lg border shadow-sm">
-                      {/* Stylized QR representation */}
-                      <div className="h-36 w-36 bg-neutral-950 flex flex-col items-center justify-center p-2 rounded relative overflow-hidden">
-                        <div className="absolute inset-2 border-4 border-white/20 grid grid-cols-4 gap-1 p-1">
-                          <div className="bg-white rounded-sm" />
-                          <div className="bg-white/40 rounded-sm" />
-                          <div className="bg-white rounded-sm" />
-                          <div className="bg-white/80 rounded-sm" />
-                          <div className="bg-white/60 rounded-sm" />
-                          <div className="bg-white rounded-sm" />
-                          <div className="bg-white/30 rounded-sm" />
-                          <div className="bg-white rounded-sm" />
-                          <div className="bg-white rounded-sm" />
-                          <div className="bg-white/20 rounded-sm" />
-                          <div className="bg-white rounded-sm" />
-                          <div className="bg-white/70 rounded-sm" />
-                        </div>
-                        <div className="z-10 bg-white text-black text-[9px] font-bold px-2 py-0.5 rounded shadow">
-                          QRIS INSTANT
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="text-xs space-y-1.5 text-neutral-600 dark:text-neutral-400">
-                      <p className="font-bold text-neutral-900 dark:text-white">How to settle via QRIS:</p>
-                      <p>1. Open your Mobile Banking (BCA, Mandiri) or E-Wallet (GoPay, OVO, ShopeePay).</p>
-                      <p>2. Scan QR or transfer exact amount: <strong>Rp {placedOrder.total?.toLocaleString('id-ID')}</strong></p>
-                      <p>3. Confirm with WhatsApp Concierge below for accelerated dispatch.</p>
-                    </div>
+                <div className="bg-white dark:bg-black p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-center gap-4 text-xs">
+                  <div className="h-28 w-28 bg-neutral-950 flex flex-col items-center justify-center p-2 rounded-lg shrink-0 text-white font-mono text-[9px] text-center border">
+                    <QrCode className="h-10 w-10 mb-1" />
+                    <span className="font-bold">QRIS PAY</span>
+                  </div>
+                  <div className="space-y-1 text-neutral-600 dark:text-neutral-400">
+                    <p className="font-bold text-neutral-900 dark:text-white">Instant QRIS Transfer:</p>
+                    <p>1. Open your Mobile Banking (BCA, Mandiri) or E-Wallet (GoPay, OVO, ShopeePay).</p>
+                    <p>2. Transfer exact balance: <strong>Rp {placedOrder.total?.toLocaleString('id-ID')}</strong></p>
+                    <p>3. Notify concierge below to accelerate courier handover.</p>
                   </div>
                 </div>
               )}
 
-              {/* Bank Transfer Instructions */}
+              {/* Bank Transfer */}
               {placedOrder.payment_method === 'bank_transfer' && (
-                <div className="space-y-3 pt-2">
-                  <div className="bg-white dark:bg-black p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-[10px] text-neutral-400 uppercase font-bold tracking-wider">
-                          Bank Central Asia (BCA) Atelier Account
-                        </div>
-                        <div className="font-mono text-sm font-bold text-neutral-900 dark:text-white">
-                          8730 1928 3344
-                        </div>
-                        <div className="text-[11px] text-neutral-500">
-                          Account Name: <strong>PT ANGEL INCORPORATED</strong>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => copyToClipboard('873019283344', 'account')}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 px-3 py-2 text-xs font-bold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-                      >
-                        {copiedAccount ? (
-                          <>
-                            <Check className="h-3.5 w-3.5 text-emerald-500" />
-                            <span>Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="h-3.5 w-3.5" />
-                            <span>Copy Account</span>
-                          </>
-                        )}
-                      </button>
+                <div className="bg-white dark:bg-black p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+                  <div>
+                    <div className="text-[10px] text-neutral-400 uppercase font-bold tracking-wider">
+                      Bank Central Asia (BCA)
+                    </div>
+                    <div className="font-mono text-sm font-bold text-neutral-900 dark:text-white">
+                      8730 1928 3344
+                    </div>
+                    <div className="text-[11px] text-neutral-500">
+                      a/n PT ANGEL INCORPORATED
                     </div>
                   </div>
-                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                    Kindly complete the transfer within 24 hours to secure reserved piece allocation.
-                  </p>
-                </div>
-              )}
 
-              {/* COD Instructions */}
-              {placedOrder.payment_method === 'cod' && (
-                <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-600" />
-                  <span>Cash on Delivery active. Please prepare exact tender upon courier delivery.</span>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard('873019283344', 'account')}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 px-3 py-1.5 text-xs font-bold text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                  >
+                    {copiedAccount ? (
+                      <>
+                        <Check className="h-3.5 w-3.5 text-emerald-500" />
+                        <span>Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               )}
             </div>
 
-            {/* Product Items Breakdown */}
-            <div className="space-y-3">
+            {/* Items Summary */}
+            <div className="space-y-2">
               <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-neutral-400">
-                Archived Items in Requisition
+                Items Summary
               </span>
               <div className="divide-y divide-neutral-100 dark:divide-neutral-800/80">
                 {placedOrder.order_items?.map((item: any) => (
-                  <div key={item.id} className="py-3 flex items-center justify-between text-xs">
+                  <div key={item.id} className="py-2 flex items-center justify-between text-xs">
                     <div>
                       <span className="font-semibold text-neutral-900 dark:text-white">
                         {item.product_name}
@@ -452,50 +405,49 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Financial Breakdown Table */}
-            <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-5 space-y-2.5 text-xs border border-neutral-200/60 dark:border-neutral-800">
+            {/* Price Table */}
+            <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-4 space-y-2 text-xs border border-neutral-200/60 dark:border-neutral-800">
               <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                <span>Product Subtotal</span>
+                <span>Subtotal</span>
                 <Price amount={placedOrder.subtotal} />
               </div>
               <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                <span>Courier Service ({placedOrder.shipping_courier})</span>
+                <span>Shipping ({placedOrder.shipping_courier})</span>
                 {placedOrder.shipping_cost === 0 ? (
                   <span className="text-emerald-600 dark:text-emerald-400 font-bold">COMPLIMENTARY</span>
                 ) : (
                   <Price amount={placedOrder.shipping_cost} />
                 )}
               </div>
-              <div className="flex justify-between text-base font-bold text-neutral-900 dark:text-white pt-2.5 border-t border-neutral-200 dark:border-neutral-800">
-                <span>Total Amount</span>
+              <div className="flex justify-between text-sm font-bold text-neutral-900 dark:text-white pt-2 border-t border-neutral-200 dark:border-neutral-800">
+                <span>Total Payment</span>
                 <Price amount={placedOrder.total} />
               </div>
             </div>
 
-            {/* Recipient & Shipping Destination */}
-            <div className="text-xs space-y-1 text-neutral-600 dark:text-neutral-400 bg-neutral-50/50 dark:bg-neutral-900/40 p-4 rounded-xl border border-neutral-200/60 dark:border-neutral-800">
-              <div className="font-bold text-neutral-900 dark:text-white mb-1">
-                Recipient & Delivery Destination:
+            {/* Destination */}
+            <div className="text-xs space-y-1 text-neutral-600 dark:text-neutral-400 bg-neutral-50/50 dark:bg-neutral-900/40 p-3.5 rounded-xl border border-neutral-200/60 dark:border-neutral-800">
+              <div className="font-bold text-neutral-900 dark:text-white">
+                Destination: {placedOrder.shipping_name} ({placedOrder.shipping_phone})
               </div>
-              <div>{placedOrder.shipping_name} &bull; {placedOrder.shipping_phone}</div>
               <div>{placedOrder.shipping_address}</div>
             </div>
 
-            {/* Action CTAs */}
-            <div className="space-y-3 pt-2">
+            {/* Actions */}
+            <div className="space-y-2.5 pt-2">
               <a
                 href={`https://wa.me/6281234567890?text=${generateWhatsAppMessage()}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-4 text-xs font-bold uppercase tracking-[0.14em] transition hover:opacity-90 shadow-md"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 shadow-md"
               >
                 <WhatsAppIcon className="h-4 w-4" />
-                <span>Notify & Confirm with WhatsApp Concierge</span>
+                <span>Confirm with WhatsApp Concierge</span>
               </a>
 
               <Link
                 href="/"
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-200 dark:border-neutral-800 py-3.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-200 dark:border-neutral-800 py-3 text-xs font-semibold text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
               >
                 <span>Return to Atelier Catalog</span>
               </Link>
@@ -513,18 +465,18 @@ export default function CheckoutPage() {
     return (
       <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] flex items-center justify-center p-6 text-neutral-900 dark:text-white">
         <div className="text-center space-y-4 max-w-sm">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-neutral-100 dark:bg-neutral-900 text-neutral-400">
-            <ShoppingBag className="h-8 w-8" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-neutral-100 dark:bg-neutral-900 text-neutral-400">
+            <ShoppingBag className="h-7 w-7" />
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-semibold">Your Bag is Empty</h1>
+          <h1 className="font-serif text-2xl font-semibold">Your Bag is Empty</h1>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            Select pieces from our fine fragrance and atelier collections before proceeding to checkout.
+            Select fine fragrances or pieces from the boutique before proceeding.
           </p>
           <Link
             href="/#shop"
-            className="inline-flex items-center gap-2 rounded-full bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition shadow-md"
+            className="inline-flex items-center gap-2 rounded-full bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-6 py-2.5 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition shadow-md"
           >
-            <span>Explore Archive</span>
+            <span>Explore Collection</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -533,12 +485,12 @@ export default function CheckoutPage() {
   }
 
   // =========================================================================
-  // VIEW: Main Luxury Checkout Form
+  // VIEW: Simple Minimalist Checkout Page
   // =========================================================================
   return (
     <main className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0d0e] py-10 px-4 sm:px-6 lg:px-8 text-neutral-900 dark:text-white transition-colors duration-200">
-      <div className="mx-auto max-w-7xl">
-        {/* Top Header */}
+      <div className="mx-auto max-w-6xl">
+        {/* Minimal Header */}
         <div className="flex items-center justify-between pb-6 mb-8 border-b border-neutral-200/80 dark:border-neutral-800">
           <Link
             href="/"
@@ -560,82 +512,49 @@ export default function CheckoutPage() {
           </button>
         </div>
 
-        {/* Multi-Step Progress Tracker */}
-        <div className="max-w-2xl mx-auto mb-10">
-          <div className="grid grid-cols-3 text-center text-xs">
-            <div className="space-y-1.5">
-              <div className="h-1 bg-emerald-500 rounded-full" />
-              <span className="font-bold text-neutral-900 dark:text-white text-[11px] tracking-wider uppercase">
-                01 Shopping Bag
-              </span>
-            </div>
-            <div className="space-y-1.5">
-              <div className="h-1 bg-black dark:bg-white rounded-full" />
-              <span className="font-bold text-neutral-900 dark:text-white text-[11px] tracking-wider uppercase">
-                02 Destination & Courier
-              </span>
-            </div>
-            <div className="space-y-1.5">
-              <div className="h-1 bg-neutral-200 dark:bg-neutral-800 rounded-full" />
-              <span className="font-medium text-neutral-400 text-[11px] tracking-wider uppercase">
-                03 Settlement & Receipt
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <form onSubmit={handlePlaceOrder} className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Left Column: Form Details */}
-          <div className="lg:col-span-7 space-y-8">
-            {/* Member Perk Banner */}
+        <form onSubmit={handlePlaceOrder} className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          {/* Left: Simple Form */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* Member Banner (Minimal) */}
             {!member ? (
-              <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#141518] p-5 flex items-center justify-between gap-4 shadow-subtle">
+              <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#141518] p-4 flex items-center justify-between gap-3 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                    <Crown className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
-                      Atelier Guild Member?
-                    </h4>
-                    <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
-                      Sign in seamlessly with phone OTP to apply 5% privilege and auto-populate delivery address.
-                    </p>
+                  <Crown className="h-5 w-5 text-amber-500 shrink-0" />
+                  <div className="text-xs">
+                    <span className="font-bold text-neutral-900 dark:text-white">Atelier Member? </span>
+                    <span className="text-neutral-500 dark:text-neutral-400">Sign in with phone OTP for 5% off.</span>
                   </div>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => setIsMemberModalOpen(true)}
-                  className="rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-4 py-2 text-xs font-bold uppercase tracking-wider hover:opacity-90 transition shrink-0"
+                  className="rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider hover:opacity-90 transition shrink-0"
                 >
                   Sign In
                 </button>
               </div>
             ) : (
-              <div className="rounded-2xl border border-emerald-200/80 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 p-4 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
+              <div className="rounded-2xl border border-emerald-200/80 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 p-3.5 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                  <span>
-                    Authenticated as <strong>{member.name}</strong> ({member.memberTier}) &bull; 5% atelier privilege applied.
-                  </span>
+                  <span>Member Active: <strong>{member.name}</strong> (5% Discount Applied)</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsMemberModalOpen(true)}
-                  className="underline font-semibold hover:text-emerald-950 dark:hover:text-white ml-2"
+                  className="underline font-semibold hover:text-emerald-950 dark:hover:text-white"
                 >
                   Switch
                 </button>
               </div>
             )}
 
-            {/* Section 1: Contact Information */}
-            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-5">
+            {/* 1. Recipient Information */}
+            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-sm space-y-4">
               <div className="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <User className="h-4 w-4 text-neutral-400" />
                 <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                  1. Recipient Information
+                  1. Recipient Details
                 </h3>
               </div>
 
@@ -649,7 +568,7 @@ export default function CheckoutPage() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Jessica Angelia"
+                    placeholder="Jessica Angelia"
                     className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                   />
                 </div>
@@ -663,7 +582,7 @@ export default function CheckoutPage() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+62 812-3456-7890"
+                    placeholder="081234567890"
                     className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                   />
                 </div>
@@ -671,20 +590,20 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Email Address (Optional for Digital Receipt)
+                  Email Address (Optional)
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jessica@angelinc.id"
+                  placeholder="jessica@example.com"
                   className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
                 />
               </div>
             </div>
 
-            {/* Section 2: Shipping Address */}
-            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-5">
+            {/* 2. Delivery Address */}
+            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-sm space-y-4">
               <div className="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <MapPin className="h-4 w-4 text-neutral-400" />
                 <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
@@ -694,11 +613,11 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Street Address (Building, Street, District, Residence) *
+                  Street Address (Street, Building, Unit) *
                 </label>
                 <textarea
                   required
-                  rows={3}
+                  rows={2}
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan"
@@ -729,7 +648,7 @@ export default function CheckoutPage() {
                     <option value="Bandung">Bandung</option>
                     <option value="Surabaya">Surabaya</option>
                     <option value="Bali / Denpasar">Bali / Denpasar</option>
-                    <option value="Luar Pulau Jawa">International / Other Regions</option>
+                    <option value="Other Regions">Other Regions / Outer Islands</option>
                   </select>
                 </div>
 
@@ -746,33 +665,20 @@ export default function CheckoutPage() {
                   />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-                  Delivery Notes & Instructions (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Leave with building concierge or reception"
-                  className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2.5 px-3.5 text-xs text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
-                />
-              </div>
             </div>
 
-            {/* Section 3: Shipping Courier Options */}
-            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-4">
+            {/* 3. Courier Option */}
+            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <div className="flex items-center gap-2">
                   <Truck className="h-4 w-4 text-neutral-400" />
                   <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
-                    3. Courier & Dispatch Service
+                    3. Courier Service
                   </h3>
                 </div>
                 {isFreeShipping && (
-                  <span className="rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold px-2.5 py-0.5 uppercase tracking-wider">
-                    Complimentary Shipping Active
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                    Free Shipping
                   </span>
                 )}
               </div>
@@ -785,10 +691,10 @@ export default function CheckoutPage() {
                   return (
                     <label
                       key={opt.id}
-                      className={`cursor-pointer rounded-2xl border p-4 flex flex-col justify-between transition-all ${
+                      className={`cursor-pointer rounded-2xl border p-3.5 flex flex-col justify-between transition-all ${
                         isSelected
                           ? 'border-neutral-950 dark:border-white bg-neutral-50 dark:bg-neutral-900 shadow-sm'
-                          : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400 dark:hover:border-neutral-600'
+                          : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400'
                       }`}
                     >
                       <input
@@ -800,22 +706,17 @@ export default function CheckoutPage() {
                         className="sr-only"
                       />
                       <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold text-neutral-900 dark:text-white">
-                            {opt.courier}
-                          </span>
-                          <span className="text-[10px] text-neutral-400 font-mono">
-                            {opt.etd}
-                          </span>
+                        <div className="text-xs font-bold text-neutral-900 dark:text-white">
+                          {opt.courier}
                         </div>
-                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 leading-tight">
-                          {opt.description}
-                        </p>
+                        <div className="text-[10px] text-neutral-400 font-mono">
+                          {opt.etd}
+                        </div>
                       </div>
 
-                      <div className="pt-3 mt-3 border-t border-neutral-100 dark:border-neutral-800 text-xs font-bold text-neutral-900 dark:text-white">
+                      <div className="pt-2 mt-2 border-t border-neutral-100 dark:border-neutral-800 text-xs font-bold text-neutral-900 dark:text-white">
                         {priceToDisplay === 0 ? (
-                          <span className="text-emerald-600 dark:text-emerald-400">COMPLIMENTARY</span>
+                          <span className="text-emerald-600 dark:text-emerald-400">FREE</span>
                         ) : (
                           <Price amount={priceToDisplay} />
                         )}
@@ -826,8 +727,8 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Section 4: Payment Methods */}
-            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-4">
+            {/* 4. Payment Method (NO COD) */}
+            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-sm space-y-4">
               <div className="flex items-center gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
                 <CreditCard className="h-4 w-4 text-neutral-400" />
                 <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
@@ -835,13 +736,13 @@ export default function CheckoutPage() {
                 </h3>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-3">
+              <div className="grid sm:grid-cols-3 gap-3">
                 {/* QRIS */}
                 <label
-                  className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
+                  className={`cursor-pointer rounded-2xl border p-3.5 flex flex-col justify-between transition-all ${
                     paymentMethod === 'qris'
                       ? 'border-neutral-950 dark:border-white bg-neutral-50 dark:bg-neutral-900 shadow-sm'
-                      : 'border-neutral-200 dark:border-neutral-800'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400'
                   }`}
                 >
                   <input
@@ -852,25 +753,25 @@ export default function CheckoutPage() {
                     onChange={() => setPaymentMethod('qris')}
                     className="sr-only"
                   />
-                  <div className="h-10 w-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                    <QrCode className="h-5 w-5 text-neutral-900 dark:text-white" />
+                  <div className="h-8 w-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                    <QrCode className="h-4 w-4 text-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                      QRIS Instant Pay
+                      QRIS Instant
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      BCA, Mandiri, Gopay, OVO, ShopeePay
+                      BCA, Mandiri, E-Wallet
                     </div>
                   </div>
                 </label>
 
                 {/* Bank Transfer */}
                 <label
-                  className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
+                  className={`cursor-pointer rounded-2xl border p-3.5 flex flex-col justify-between transition-all ${
                     paymentMethod === 'bank_transfer'
                       ? 'border-neutral-950 dark:border-white bg-neutral-50 dark:bg-neutral-900 shadow-sm'
-                      : 'border-neutral-200 dark:border-neutral-800'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400'
                   }`}
                 >
                   <input
@@ -881,54 +782,25 @@ export default function CheckoutPage() {
                     onChange={() => setPaymentMethod('bank_transfer')}
                     className="sr-only"
                   />
-                  <div className="h-10 w-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                    <Building2 className="h-5 w-5 text-neutral-900 dark:text-white" />
+                  <div className="h-8 w-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                    <Building2 className="h-4 w-4 text-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-neutral-900 dark:text-white">
                       Bank Transfer
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      BCA Virtual Account / Mandiri VA
-                    </div>
-                  </div>
-                </label>
-
-                {/* COD */}
-                <label
-                  className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
-                    paymentMethod === 'cod'
-                      ? 'border-neutral-950 dark:border-white bg-neutral-50 dark:bg-neutral-900 shadow-sm'
-                      : 'border-neutral-200 dark:border-neutral-800'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="cod"
-                    checked={paymentMethod === 'cod'}
-                    onChange={() => setPaymentMethod('cod')}
-                    className="sr-only"
-                  />
-                  <div className="h-10 w-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                    <Banknote className="h-5 w-5 text-neutral-900 dark:text-white" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                      COD (Cash on Delivery)
-                    </div>
-                    <div className="text-[10px] text-neutral-400">
-                      Pay upon delivery to courier
+                      BCA 8730 1928 3344
                     </div>
                   </div>
                 </label>
 
                 {/* WhatsApp Concierge */}
                 <label
-                  className={`cursor-pointer rounded-2xl border p-4 flex items-center gap-3 transition-all ${
+                  className={`cursor-pointer rounded-2xl border p-3.5 flex flex-col justify-between transition-all ${
                     paymentMethod === 'whatsapp'
                       ? 'border-neutral-950 dark:border-white bg-neutral-50 dark:bg-neutral-900 shadow-sm'
-                      : 'border-neutral-200 dark:border-neutral-800'
+                      : 'border-neutral-200 dark:border-neutral-800 hover:border-neutral-400'
                   }`}
                 >
                   <input
@@ -939,51 +811,27 @@ export default function CheckoutPage() {
                     onChange={() => setPaymentMethod('whatsapp')}
                     className="sr-only"
                   />
-                  <div className="h-10 w-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                    <WhatsAppIcon className="h-5 w-5" />
+                  <div className="h-8 w-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                    <WhatsAppIcon className="h-4 w-4" />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-neutral-900 dark:text-white">
-                      WhatsApp Concierge
+                      WhatsApp VIP
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      Direct VIP patron assistance
+                      Direct Concierge Care
                     </div>
                   </div>
                 </label>
               </div>
-
-              {/* Dynamic Guidance Detail based on selected payment */}
-              <div className="mt-4 p-4 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-neutral-50/60 dark:bg-neutral-900/40 text-xs space-y-1.5">
-                {paymentMethod === 'qris' && (
-                  <div className="text-neutral-600 dark:text-neutral-400">
-                    <strong className="text-neutral-900 dark:text-white">QRIS Settlement:</strong> An instant QR code will be generated upon confirming your order. Compatible with all Indonesian mobile banking & e-wallets.
-                  </div>
-                )}
-                {paymentMethod === 'bank_transfer' && (
-                  <div className="text-neutral-600 dark:text-neutral-400">
-                    <strong className="text-neutral-900 dark:text-white">Direct Bank Settlement:</strong> Official BCA Account (<span className="font-mono text-neutral-900 dark:text-white">8730 1928 3344 a/n PT ANGEL INC</span>) will be displayed on your invoice.
-                  </div>
-                )}
-                {paymentMethod === 'cod' && (
-                  <div className="text-neutral-600 dark:text-neutral-400">
-                    <strong className="text-neutral-900 dark:text-white">Cash on Delivery:</strong> Inspected & sealed dispatch. Settle in cash directly with the courier upon arrival.
-                  </div>
-                )}
-                {paymentMethod === 'whatsapp' && (
-                  <div className="text-neutral-600 dark:text-neutral-400">
-                    <strong className="text-neutral-900 dark:text-white">VIP Concierge Service:</strong> Instant direct coordination with our private client concierge team.
-                  </div>
-                )}
-              </div>
             </div>
           </div>
 
-          {/* Right Column: Sticky Order Summary & Voucher */}
-          <div className="lg:col-span-5 lg:sticky lg:top-8 space-y-6">
-            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 sm:p-8 shadow-card space-y-6">
-              <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-4">
-                <h3 className="font-serif text-lg font-semibold text-neutral-900 dark:text-white">
+          {/* Right: Sticky Order Summary */}
+          <div className="lg:col-span-5 lg:sticky lg:top-8 space-y-4">
+            <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-sm space-y-5">
+              <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-3">
+                <h3 className="font-serif text-base font-semibold text-neutral-900 dark:text-white">
                   Order Summary
                 </h3>
                 <span className="text-xs font-bold text-neutral-400">
@@ -991,11 +839,11 @@ export default function CheckoutPage() {
                 </span>
               </div>
 
-              {/* Items List with Direct Quantity Adjuster */}
-              <div className="space-y-4 max-h-72 overflow-y-auto pr-1 divide-y divide-neutral-100 dark:divide-neutral-800/60">
+              {/* Items List */}
+              <div className="space-y-3 max-h-64 overflow-y-auto pr-1 divide-y divide-neutral-100 dark:divide-neutral-800/60">
                 {cart.map(({ product, quantity }) => (
-                  <div key={product.id} className="pt-3 first:pt-0 flex items-center gap-3">
-                    <div className="h-14 w-14 rounded-xl bg-neutral-950 overflow-hidden shrink-0 border border-neutral-200 dark:border-neutral-800">
+                  <div key={product.id} className="pt-2.5 first:pt-0 flex items-center gap-3">
+                    <div className="h-12 w-12 rounded-xl bg-neutral-950 overflow-hidden shrink-0 border border-neutral-200 dark:border-neutral-800">
                       {product.imageUrl ? (
                         <img
                           src={product.imageUrl}
@@ -1003,7 +851,7 @@ export default function CheckoutPage() {
                           className="h-full w-full object-cover grayscale contrast-125"
                         />
                       ) : (
-                        <Sparkles className="h-5 w-5 text-amber-500 m-auto" />
+                        <Sparkles className="h-4 w-4 text-amber-500 m-auto" />
                       )}
                     </div>
 
@@ -1011,35 +859,30 @@ export default function CheckoutPage() {
                       <h4 className="text-xs font-semibold text-neutral-900 dark:text-white truncate">
                         {product.name}
                       </h4>
-                      <p className="text-[11px] text-neutral-400">
+                      <p className="text-[10px] text-neutral-400">
                         <Price amount={product.discountPrice ?? product.price} />
                       </p>
 
-                      {/* Micro Stepper */}
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="inline-flex items-center border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden bg-neutral-50 dark:bg-neutral-900">
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(product.id, quantity - 1)}
-                            className="px-2 py-0.5 text-neutral-500 hover:text-black dark:hover:text-white transition"
-                          >
-                            <Minus className="h-3 w-3" />
-                          </button>
-                          <span className="px-2 text-[10px] font-bold">{quantity}</span>
-                          <button
-                            type="button"
-                            onClick={() => updateQuantity(product.id, quantity + 1)}
-                            className="px-2 py-0.5 text-neutral-500 hover:text-black dark:hover:text-white transition"
-                          >
-                            <Plus className="h-3 w-3" />
-                          </button>
-                        </div>
-
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(product.id, quantity - 1)}
+                          className="h-5 w-5 rounded border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white"
+                        >
+                          <Minus className="h-2.5 w-2.5" />
+                        </button>
+                        <span className="text-[11px] font-bold px-1.5">{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(product.id, quantity + 1)}
+                          className="h-5 w-5 rounded border border-neutral-200 dark:border-neutral-700 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white"
+                        >
+                          <Plus className="h-2.5 w-2.5" />
+                        </button>
                         <button
                           type="button"
                           onClick={() => removeFromCart(product.id)}
-                          className="text-neutral-400 hover:text-rose-500 transition p-0.5"
-                          title="Remove item"
+                          className="text-neutral-400 hover:text-rose-500 ml-2"
                         >
                           <Trash2 className="h-3 w-3" />
                         </button>
@@ -1053,39 +896,31 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              {/* Promo Code Input Form */}
+              {/* Promo Input */}
               <div className="pt-2 border-t border-neutral-100 dark:border-neutral-800">
                 {!appliedPromo ? (
                   <form onSubmit={handleApplyPromo} className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
-                      <input
-                        type="text"
-                        value={promoCodeInput}
-                        onChange={(e) => setPromoCodeInput(e.target.value)}
-                        placeholder="Privilege Code (e.g. ANGEL10)"
-                        className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2 pl-9 pr-3 text-xs uppercase text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      value={promoCodeInput}
+                      onChange={(e) => setPromoCodeInput(e.target.value)}
+                      placeholder="Voucher (e.g. ANGEL10)"
+                      className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/60 py-2 px-3 text-xs uppercase text-neutral-900 dark:text-white outline-none focus:border-black dark:focus:border-white transition"
+                    />
                     <button
                       type="submit"
-                      className="rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700 transition"
+                      className="rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-3 py-2 text-xs font-bold uppercase tracking-wider hover:opacity-90 transition shrink-0"
                     >
                       Apply
                     </button>
                   </form>
                 ) : (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-xs">
-                    <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
-                      <Tag className="h-3.5 w-3.5" />
-                      <span>
-                        <strong>{appliedPromo.code}</strong>: {appliedPromo.label}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-xs text-emerald-800 dark:text-emerald-300">
+                    <span><strong>{appliedPromo.code}</strong> applied</span>
                     <button
                       type="button"
                       onClick={handleRemovePromo}
-                      className="text-[11px] font-bold text-rose-600 dark:text-rose-400 hover:underline"
+                      className="text-[10px] font-bold text-rose-600 hover:underline"
                     >
                       Remove
                     </button>
@@ -1093,23 +928,23 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              {/* Price Calculation Table */}
-              <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-4 space-y-2.5 text-xs border border-neutral-200/60 dark:border-neutral-800">
+              {/* Financial Calculation */}
+              <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 p-4 space-y-2 text-xs border border-neutral-200/60 dark:border-neutral-800">
                 <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-                  <span>Product Subtotal</span>
+                  <span>Subtotal</span>
                   <Price amount={cartTotal} />
                 </div>
 
                 {memberDiscount > 0 && (
-                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
-                    <span>Member Privilege (5%)</span>
+                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
+                    <span>Member Discount (5%)</span>
                     <span>-<Price amount={memberDiscount} /></span>
                   </div>
                 )}
 
                 {promoDiscount > 0 && (
-                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
-                    <span>Privilege Voucher ({appliedPromo?.code})</span>
+                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
+                    <span>Promo ({appliedPromo?.code})</span>
                     <span>-<Price amount={promoDiscount} /></span>
                   </div>
                 )}
@@ -1117,28 +952,28 @@ export default function CheckoutPage() {
                 <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
                   <span>Shipping ({selectedShippingOption.courier})</span>
                   {shippingCost === 0 ? (
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">COMPLIMENTARY</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">FREE</span>
                   ) : (
                     <Price amount={shippingCost} />
                   )}
                 </div>
 
-                <div className="flex justify-between text-base font-bold text-neutral-900 dark:text-white pt-2.5 border-t border-neutral-200 dark:border-neutral-800">
-                  <span>Total Amount</span>
+                <div className="flex justify-between text-base font-bold text-neutral-900 dark:text-white pt-2 border-t border-neutral-200 dark:border-neutral-800">
+                  <span>Total</span>
                   <Price amount={finalTotal} />
                 </div>
               </div>
 
-              {/* Place Order CTA Button */}
+              {/* CTA Button */}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-4 text-xs font-bold uppercase tracking-[0.14em] transition hover:opacity-90 active:scale-95 disabled:opacity-50 shadow-md"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-wider transition hover:opacity-90 active:scale-95 disabled:opacity-50 shadow-md"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Placing Order…</span>
+                    <span>Processing…</span>
                   </>
                 ) : (
                   <>
@@ -1148,9 +983,9 @@ export default function CheckoutPage() {
                 )}
               </button>
 
-              <div className="flex items-center justify-center gap-2 text-[10px] text-neutral-400 text-center">
+              <div className="flex items-center justify-center gap-1.5 text-[10px] text-neutral-400 text-center">
                 <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-                <span>256-Bit Encrypted Secure Checkout & Guarantee</span>
+                <span>256-Bit Encrypted Secure Checkout</span>
               </div>
             </div>
           </div>

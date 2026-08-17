@@ -28,31 +28,29 @@ export default function StorefrontView() {
   };
 
   return (
-    <StorefrontProvider>
-      <div className="min-h-screen bg-white dark:bg-[#0c0d0e] text-neutral-900 dark:text-neutral-100 transition-colors duration-200 selection:bg-neutral-950 selection:text-white">
-        {/* Sticky Header */}
-        <StorefrontHeader />
+    <div className="min-h-screen bg-white dark:bg-[#0c0d0e] text-neutral-900 dark:text-neutral-100 transition-colors duration-200 selection:bg-neutral-950 selection:text-white">
+      {/* Sticky Header */}
+      <StorefrontHeader />
 
-        {/* Main Content Sections */}
-        <main>
-          <HeroSection />
-          <CategoryStrip onSelectCategory={handleSelectCategory} />
-          <ProductCollection initialFilter={selectedFilter} key={selectedFilter} />
-          <EditorialSection />
-          <AboutSection />
-          <MembershipSection />
-          <ValuesSection />
-          <NewsletterSection />
-        </main>
+      {/* Main Content Sections */}
+      <main>
+        <HeroSection />
+        <CategoryStrip onSelectCategory={handleSelectCategory} />
+        <ProductCollection initialFilter={selectedFilter} key={selectedFilter} />
+        <EditorialSection />
+        <AboutSection />
+        <MembershipSection />
+        <ValuesSection />
+        <NewsletterSection />
+      </main>
 
-        {/* Footer */}
-        <StorefrontFooter />
+      {/* Footer */}
+      <StorefrontFooter />
 
-        {/* Global Storefront Modals & Drawers */}
-        <QuickViewModal />
-        <CartDrawer />
-        <SearchModal />
-      </div>
-    </StorefrontProvider>
+      {/* Global Storefront Modals & Drawers */}
+      <QuickViewModal />
+      <CartDrawer />
+      <SearchModal />
+    </div>
   );
 }

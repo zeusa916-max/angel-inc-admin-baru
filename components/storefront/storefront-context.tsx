@@ -21,7 +21,8 @@ export interface CartItem {
   quantity: number;
 }
 
-interface StorefrontContextType {
+export interface StorefrontContextType {
+  isLoaded: boolean;
   cart: CartItem[];
   addToCart: (product: StorefrontProduct, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
@@ -145,6 +146,7 @@ export const DEFAULT_STORE_PRODUCTS: StorefrontProduct[] = [
 
 export function StorefrontProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [quickViewProduct, setQuickViewProduct] = useState<StorefrontProduct | null>(null);
@@ -153,39 +155,49 @@ export function StorefrontProvider({ children }: { children: React.ReactNode }) 
 
   const { success } = useToast();
 
-  // Load saved cart from localStorage on mount
+  // Load saved cart and wishlist from localStorage on mount
   useEffect(() => {
     try {
       const savedCart = localStorage.getItem('angel_store_cart');
       if (savedCart) {
-        setCart(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+          setCart(parsed);
+        }
       }
       const savedWishlist = localStorage.getItem('angel_store_wishlist');
       if (savedWishlist) {
-        setWishlist(JSON.parse(savedWishlist));
+        const parsedWish = JSON.parse(savedWishlist);
+        if (Array.isArray(parsedWish)) {
+          setWishlist(parsedWish);
+        }
       }
     } catch {
-      // Ignore
+      // Ignore parse errors
+    } finally {
+      setIsLoaded(true);
     }
   }, []);
 
-  // Save cart to localStorage
+  // Save cart to localStorage only after initial client load is complete
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('angel_store_cart', JSON.stringify(cart));
     } catch {
-      // Ignore
+      // Ignore storage errors
     }
-  }, [cart]);
+  }, [cart, isLoaded]);
 
-  // Save wishlist to localStorage
+  // Save wishlist to localStorage only after initial client load is complete
   useEffect(() => {
+    if (!isLoaded) return;
     try {
       localStorage.setItem('angel_store_wishlist', JSON.stringify(wishlist));
     } catch {
-      // Ignore
+      // Ignore storage errors
     }
-  }, [wishlist]);
+  }, [wishlist, isLoaded]);
 
   const addToCart = (product: StorefrontProduct, quantity = 1) => {
     setCart((prev) => {
@@ -200,7 +212,7 @@ export function StorefrontProvider({ children }: { children: React.ReactNode }) 
       return [...prev, { product, quantity }];
     });
 
-    success(`"${product.name}" ditambahkan ke keranjang.`, 'Keranjang Belanja');
+    success(`"${product.name}" added to shopping bag.`, 'Shopping Bag');
   };
 
   const removeFromCart = (productId: string) => {
@@ -250,6 +262,7 @@ export function StorefrontProvider({ children }: { children: React.ReactNode }) 
   return (
     <StorefrontContext.Provider
       value={{
+        isLoaded,
         cart,
         addToCart,
         removeFromCart,
