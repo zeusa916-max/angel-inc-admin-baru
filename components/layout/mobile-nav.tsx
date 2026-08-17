@@ -19,6 +19,7 @@ import {
   Users,
   BarChart3,
   Settings,
+  Info,
   LogOut,
   ShieldCheck,
   Globe,
@@ -32,6 +33,7 @@ const NAV_ITEMS = [
   { href: '/admin/customers', label: 'Pelanggan', icon: Users },
   { href: '/admin/reports', label: 'Laporan', icon: BarChart3 },
   { href: '/admin/settings', label: 'Pengaturan', icon: Settings },
+  { href: '/admin/system-info', label: 'Info & Changelog', icon: Info },
 ];
 
 export default function MobileNav({
