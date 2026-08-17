@@ -2,6 +2,7 @@
 
 import { useTheme } from '@/components/providers/theme-provider';
 import { useCurrency } from '@/components/providers/currency-provider';
+import DatabaseStatusBadge from '@/components/admin/database-status-badge';
 import { Sun, Moon, DollarSign, RefreshCw } from 'lucide-react';
 
 export default function HeaderControls({ className = '' }: { className?: string }) {
@@ -14,6 +15,9 @@ export default function HeaderControls({ className = '' }: { className?: string 
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
+      {/* Database Connection Status Badge */}
+      <DatabaseStatusBadge showLabel={false} />
+
       {/* Currency Switcher Pill */}
       <div className="relative group">
         <button

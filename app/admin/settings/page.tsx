@@ -9,6 +9,7 @@ import {
 } from '@/server/actions/profile.actions';
 import ClearDummyModal from '@/components/admin/clear-dummy-modal';
 import RecreateDummyModal from '@/components/admin/recreate-dummy-modal';
+import DatabaseStatusBadge from '@/components/admin/database-status-badge';
 import {
   User,
   KeyRound,
@@ -300,18 +301,19 @@ export default function SettingsPage() {
 
           {/* Database Maintenance, Recreate & Clear Dummy Data Card */}
           <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-6 shadow-subtle space-y-4">
-            <div className="flex items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-neutral-100 dark:border-neutral-800 pb-3 gap-3">
               <div className="flex items-center gap-2.5">
-                <Database className="h-5 w-5 text-neutral-700 dark:text-neutral-300" />
+                <Database className="h-5 w-5 text-neutral-700 dark:text-neutral-300 shrink-0" />
                 <div>
                   <h2 className="text-sm font-semibold text-neutral-900 dark:text-white">
-                    Manajemen & Reset Data Toko
+                    Manajemen & Status Basis Data
                   </h2>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    Bersihkan data dummy untuk memulai toko riil, atau isi ulang data sampel untuk demo testing.
+                    Koneksi realtime Supabase, sinkronisasi data toko, dan reset data sampel.
                   </p>
                 </div>
               </div>
+              <DatabaseStatusBadge showLabel={true} />
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-1">

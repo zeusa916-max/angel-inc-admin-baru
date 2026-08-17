@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useToast } from '@/components/ui/toast';
+import DatabaseStatusBadge from '@/components/admin/database-status-badge';
 import {
   Sparkles,
   Info,
@@ -230,16 +231,15 @@ Status: All Services Nominal (0 Warnings, 0 Compile Errors)`;
         <div className="rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-4 space-y-2 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
-              Basis Data
+              Basis Data Live Status
             </span>
             <Database className="h-4 w-4 text-emerald-500" />
           </div>
-          <div className="text-base font-bold text-neutral-900 dark:text-white font-mono">
-            Supabase DB
+          <div className="pt-1">
+            <DatabaseStatusBadge showLabel={true} />
           </div>
-          <div className="text-[11px] text-neutral-500 flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>PostgreSQL + Demo Fallback</span>
+          <div className="text-[11px] text-neutral-500">
+            Klik badge untuk rincian skema tabel
           </div>
         </div>
 
