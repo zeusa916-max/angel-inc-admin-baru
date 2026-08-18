@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import BrandLogo from '@/components/layout/brand-logo';
 import { useToast } from '@/components/ui/toast';
 import { useSplash } from '@/components/ui/splash-loader';
@@ -15,21 +16,72 @@ import {
   ArrowRight,
   ArrowLeft,
   Store,
+  Clock,
+  ShieldCheck,
 } from 'lucide-react';
 
+const IDLE_TIMEOUT_SECONDS = 60; // 1 minute idle limit
+
 export default function AdminLoginPage() {
+  const router = useRouter();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(IDLE_TIMEOUT_SECONDS);
 
-  const { success, error } = useToast();
+  const { success, error, info } = useToast();
   const { showSplash } = useSplash();
+  const isRedirectingRef = useRef(false);
+
+  // Reset countdown on user interaction (typing/clicking)
+  const resetTimer = () => {
+    if (!isRedirectingRef.current) {
+      setTimeLeft(IDLE_TIMEOUT_SECONDS);
+    }
+  };
+
+  useEffect(() => {
+    // Activity listeners to refresh idle timer if user is actively filling the form
+    const handleActivity = () => {
+      resetTimer();
+    };
+
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('keydown', handleActivity);
+    window.addEventListener('touchstart', handleActivity);
+
+    // 1-second countdown ticker
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          if (!isRedirectingRef.current) {
+            isRedirectingRef.current = true;
+            showSplash('Sesi login tidak aktif. Mengalihkan ke halaman utama butik… 🕊️');
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 500);
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener('keydown', handleActivity);
+      window.removeEventListener('touchstart', handleActivity);
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+    resetTimer();
 
     const cleanInput = identifier.trim();
 
@@ -68,6 +120,7 @@ export default function AdminLoginPage() {
       setErrorMessage(msg);
       error(msg, 'Gagal Masuk');
       setBusy(false);
+      resetTimer();
     }
   };
 
@@ -77,7 +130,7 @@ export default function AdminLoginPage() {
         {/* Minimalist Luxe Card */}
         <div className="rounded-3xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-[#141518] p-8 sm:p-10 shadow-card animate-fade-in">
           {/* Top Quick Navigation Header */}
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-neutral-100 dark:border-neutral-800/80">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-100 dark:border-neutral-800/80">
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white transition group"
@@ -91,7 +144,7 @@ export default function AdminLoginPage() {
           </div>
 
           {/* Brand Logo */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className="mx-auto flex justify-center">
               <BrandLogo size="lg" />
             </div>
@@ -101,6 +154,17 @@ export default function AdminLoginPage() {
             <p className="mt-1 text-xs text-neutral-400 dark:text-neutral-500">
               Masuk untuk mengelola katalog & operasional toko
             </p>
+          </div>
+
+          {/* Idle Timeout Notice */}
+          <div className="mb-5 flex items-center justify-between px-3.5 py-2 rounded-2xl bg-neutral-50 dark:bg-neutral-900/70 border border-neutral-200/60 dark:border-neutral-800 text-[11px] text-neutral-500 dark:text-neutral-400">
+            <div className="flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5 text-amber-500" />
+              <span>Kembali ke Toko jika hening:</span>
+            </div>
+            <span className="font-mono font-bold text-neutral-800 dark:text-neutral-200 bg-white dark:bg-black/60 px-2 py-0.5 rounded-lg border border-neutral-200 dark:border-neutral-800 shadow-sm">
+              {timeLeft}s
+            </span>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -120,7 +184,10 @@ export default function AdminLoginPage() {
                   type="text"
                   required
                   value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
+                  onChange={(e) => {
+                    setIdentifier(e.target.value);
+                    resetTimer();
+                  }}
                   placeholder="admin atau email Anda"
                   autoComplete="username"
                   className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/60 py-2.5 pl-10 pr-4 text-xs text-neutral-900 dark:text-white outline-none transition focus:border-neutral-950 dark:focus:border-white focus:bg-white dark:focus:bg-neutral-900"
@@ -146,7 +213,10 @@ export default function AdminLoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    resetTimer();
+                  }}
                   placeholder="••••••••"
                   autoComplete="current-password"
                   className="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/60 py-2.5 pl-10 pr-10 text-xs text-neutral-900 dark:text-white outline-none transition focus:border-neutral-950 dark:focus:border-white focus:bg-white dark:focus:bg-neutral-900"
